@@ -8,6 +8,7 @@ import { SyntheticEvent, useState } from "react";
 import ScoreTable from "../components/ScoreTable";
 
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 interface TabPanelProps {
