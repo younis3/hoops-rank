@@ -1,0 +1,54 @@
+.page{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-top: -2vh;
+
+    // background-color: red;
+}
+
+.formContainer{
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    max-width: 380px;
+    .password{
+        color: black;
+        border: 1.6px solid rgba(0, 0, 0, 0.338);
+        // border: solid 1.5px #eae9e9;
+        -webkit-transition: 0.8s; /* Safari */
+        transition: 0.8s;
+        height: 40px;
+        padding: 6px;
+        font-size: larger;
+        border-radius: 10px;
+        &:hover{
+            box-shadow: 0 0 5pt 0.5pt #D3D3D3;
+          }
+        &:focus {
+            box-shadow: 0 0 5pt 2pt #D3D3D3;
+            outline-width: 0px;
+          }
+    }
+
+    .loginBtn{
+        background-color: black;
+        color: white;
+        font-weight: 500;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        cursor: pointer;
+        border-radius: 10px;
+        font-size: large;
+        -webkit-transition: 0.6s; /* Safari */
+        transition: 0.6s;
+        &:hover{
+            background-color: rgb(66, 64, 64);
+        }
+
+    }
+}
+
+
