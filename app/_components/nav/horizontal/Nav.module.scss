@@ -83,6 +83,11 @@ $small-screen: 800px;
                 color: white;
             }
         }
+        .current {
+            background-color: rgb(106, 106, 106, 0.8);
+            color: rgb(253, 242, 242);
+            font-weight: 600;
+        }
     }
 
     @media screen and (max-width: 700px) {
