@@ -5,6 +5,8 @@ import Image from "next/image";
 import logo from "../../../_assets/images/ararabasketball-logo.png";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import Icon from "@mui/material/Icon";
+import HelpIcon from "@mui/icons-material/Help";
 
 export default function Nav() {
   const router = useRouter();
@@ -43,6 +45,12 @@ export default function Nav() {
         alt="player basketball"
         className={styles.logo}
       />
+      <div
+        className={styles.infoIconWrapper}
+        onClick={() => handleRoute("info")}
+      >
+        <HelpIcon color="action" className={styles.infoIcon} />
+      </div>
       <div className={styles.menuWrapper1}>
         <ul className={styles.menu}>
           <li>Events</li>

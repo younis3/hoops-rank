@@ -16,6 +16,20 @@ $small-screen: 800px;
     // width: 220px;
 }
 
+.infoIconWrapper {
+    font-size: small;
+    right: 6vw;
+    position: absolute;
+    padding: 6px;
+    .infoIcon {
+        font-size: 24px;
+        &:hover {
+            color: rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+        }
+    }
+}
+
 .menuWrapper1 {
     color: black;
     text-align: center;

@@ -143,7 +143,7 @@ export default function scoreTable() {
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
       <TableContainer
-        sx={{ paddingLeft: "4px", paddingRight: "4px", mt: 3, maxHeight: 505 }}
+        sx={{ paddingLeft: "4px", paddingRight: "4px", mt: 4, maxHeight: 505 }}
       >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
