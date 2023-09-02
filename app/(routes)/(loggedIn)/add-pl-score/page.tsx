@@ -80,7 +80,7 @@ const page = () => {
         onClose={() => setIsModalVisible(false)}
       >
         <div className={styles.modalWrapper}>
-          <h1 className="text-gray-900">Add Player</h1>
+          <h1 className="text-gray-900 text-center mb-2">Add Player</h1>
           <form action="submit" className="flex items-center justify-center">
             <label htmlFor="search" className="text-black text-sm">
               Choose Player
@@ -90,7 +90,10 @@ const page = () => {
               id="search"
               className="text-black outline-none border-solide hover:border-dotted border-2 border-black-500 p-1 ml-2 mr-2 w-[44vw]"
             />
-            <input type="submit" className="bg-black p-2 cursor-pointer" />
+            <input
+              type="submit"
+              className="bg-black text-white p-2 cursor-pointer"
+            />
           </form>
         </div>
       </AddPlayerScoreModal>
