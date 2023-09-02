@@ -1,0 +1,11 @@
+TODO
+########
+
+# Add Players Page (admin) > player Name and phone Num
+# Connect to Firebase DB
+# Display Players List in Add Player Modal + live search bar
+# Finish the logic of adding and removing players on add-pl-score page
+--> # do not duplicate players in lists
+# Save score to DB and update table
+# info page
+# premier league page (show match history cards)

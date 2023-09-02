@@ -40,8 +40,8 @@ export default function Nav() {
     <header className={styles.headerx}>
       <Image
         src={logo}
-        width={310}
-        height={300}
+        width={260}
+        height={200}
         alt="player basketball"
         className={styles.logo}
       />

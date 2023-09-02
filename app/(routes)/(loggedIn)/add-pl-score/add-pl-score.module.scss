@@ -6,17 +6,42 @@
     margin-top: 2vh;
 
     .inputWrapper {
-        margin-top: 2vh;
+        // margin-top: 2vh;
         // display: flex;
         // flex-direction: row;
-        padding: 8px;
+        padding: 4px;
+        display: inline;
+        margin-left: 1.5vw;
+    }
+
+    .addPlayerWrapper {
         display: inline;
     }
 
     .addPlayer {
-        margin-left: 2vw;
+        margin-right: 2.6vw;
+        padding: 1px;
         cursor: pointer;
         font-size: 26px;
+        float: right;
+    }
+
+    .addPlayerMVP {
+        margin-right: 2.6vw;
+        padding: 1px;
+        cursor: pointer;
+        font-size: 26px;
+        // float: right;
+    }
+
+    .players {
+        margin: 1px;
+        margin-top: 0.4vh;
+        background-color: rgba(128, 128, 128, 0.146);
+        height: 60px;
+        width: 94vw;
+        padding: 5px;
+        border-radius: 4px;
     }
 
     input {
@@ -31,17 +56,20 @@
     }
 
     .scoreInput {
-        width: 18vw;
-        border: 1px solid rgba(0, 0, 0, 0.745);
-        padding: 1px 8px;
-        margin-left: 3vw;
+        width: 15vw;
+        border: 1px solid rgba(0, 0, 0, 0.372);
+        padding: 1px 6px;
+        margin-left: 2vw;
+        margin-bottom: 2vh;
+        box-shadow: 8px 4px 2px 1px rgba(0, 0, 0, 0.213);
     }
 
     .mvpInput {
-        width: 34vw;
+        width: 62vw;
     }
 
     .dateInput {
+        margin-top: 2vh;
         padding: 5px;
         outline: none;
         border: none;
@@ -57,7 +85,7 @@
         cursor: pointer;
         padding: 5px;
         font-size: 18px;
-        margin-top: 3vh;
+        margin-top: 5vh;
         text-align: center;
         margin-left: auto;
         margin-right: auto;
