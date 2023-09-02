@@ -1,4 +1,4 @@
-.page{
+.page {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,12 +8,12 @@
     // background-color: red;
 }
 
-.formContainer{
+.formContainer {
     display: flex;
     flex-direction: column;
     width: 90vw;
     max-width: 380px;
-    .password{
+    .password {
         color: black;
         border: 1.6px solid rgba(0, 0, 0, 0.338);
         // border: solid 1.5px #eae9e9;
@@ -23,16 +23,16 @@
         padding: 6px;
         font-size: larger;
         border-radius: 10px;
-        &:hover{
-            box-shadow: 0 0 5pt 0.5pt #D3D3D3;
-          }
+        &:hover {
+            box-shadow: 0 0 5pt 0.5pt #d3d3d3;
+        }
         &:focus {
-            box-shadow: 0 0 5pt 2pt #D3D3D3;
+            box-shadow: 0 0 5pt 2pt #d3d3d3;
             outline-width: 0px;
-          }
+        }
     }
 
-    .loginBtn{
+    .loginBtn {
         background-color: black;
         color: white;
         font-weight: 500;
@@ -44,11 +44,31 @@
         font-size: large;
         -webkit-transition: 0.6s; /* Safari */
         transition: 0.6s;
-        &:hover{
+        &:hover {
             background-color: rgb(66, 64, 64);
         }
-
     }
 }
 
+.checkboxWrapper {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    input[type="checkbox"] {
+        width: 20px;
+        height: 15px;
+        margin-right: 1vw;
+        cursor: pointer;
+    }
+    label {
+        color: black;
+    }
+}
 
+.err {
+    margin-top: 0.6vh;
+    color: red;
+}

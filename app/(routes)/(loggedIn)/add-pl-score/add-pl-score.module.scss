@@ -1,0 +1,66 @@
+.formContainer {
+    color: black;
+    width: 98vw;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2vh;
+
+    .inputWrapper {
+        margin-top: 2vh;
+        // display: flex;
+        // flex-direction: row;
+        padding: 8px;
+        display: inline;
+    }
+
+    .addPlayer {
+        margin-left: 2vw;
+        cursor: pointer;
+        font-size: 26px;
+    }
+
+    input {
+        width: 72%;
+        margin-left: 1.8vw;
+        border-bottom: 1.4px solid rgba(0, 0, 0, 0.745);
+        outline: none;
+    }
+    label {
+        margin-left: 0.5vw;
+        width: 30%;
+    }
+
+    .scoreInput {
+        width: 18vw;
+        border: 1px solid rgba(0, 0, 0, 0.745);
+        padding: 1px 8px;
+        margin-left: 3vw;
+    }
+
+    .mvpInput {
+        width: 34vw;
+    }
+
+    .dateInput {
+        padding: 5px;
+        outline: none;
+        border: none;
+        background-color: rgba(128, 128, 128, 0.195);
+    }
+
+    .submitWrapper {
+        text-align: center;
+    }
+    .submit {
+        background-color: rgba(0, 0, 0, 0.709);
+        color: white;
+        cursor: pointer;
+        padding: 5px;
+        font-size: 18px;
+        margin-top: 3vh;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        width: 95vw;
+    }
+}

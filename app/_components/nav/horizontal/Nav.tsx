@@ -58,6 +58,7 @@ export default function Nav() {
           <li>Videos</li>
         </ul>
       </div>
+
       <div className={styles.menuWrapper2}>
         <ul className={styles.menu}>
           <li ref={rankingTableNav} onClick={() => handleRoute("home")}>

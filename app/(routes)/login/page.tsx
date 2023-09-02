@@ -5,24 +5,43 @@ import { useRouter } from "next/navigation";
 import styles from "./login.module.scss";
 import playerPic from "../../_assets/images/basketball-player.png";
 import logo from "../../_assets/images/ararabasketball-logo.png";
+import { useUserContext } from "@/app/context/user";
 
 export default function Login() {
   const router = useRouter();
   const [pass, setPass] = useState("");
   const [err, setErr] = useState("");
+  const [isAdminChecked, setIsAdminChecked] = useState(false);
+  const { setUserRole } = useUserContext();
 
   const handlePassChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPass((event.target as HTMLInputElement).value);
   };
 
+  const checkboxHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsAdminChecked(!isAdminChecked);
+    // console.log((event.target as HTMLInputElement).checked);
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (pass === process.env.NEXT_PUBLIC_PASSWORD) {
-      setErr("");
-      router.push("/home");
+    if (isAdminChecked) {
+      if (pass === process.env.NEXT_PUBLIC_PASSWORD_ADMIN) {
+        setErr("");
+        setUserRole("admin");
+        router.push("/home");
+      } else {
+        setErr("Wrong Admin Password!");
+      }
     } else {
-      setErr("Wrong Password!");
+      if (pass === process.env.NEXT_PUBLIC_PASSWORD) {
+        setErr("");
+        setUserRole("normal");
+        router.push("/home");
+      } else {
+        setErr("Wrong Password!");
+      }
     }
   };
 
@@ -49,13 +68,23 @@ export default function Login() {
             onChange={handlePassChange}
             className={`${styles.password} p-1`}
           />
+
           <input
             type="submit"
             value={"Login"}
             className={`${styles.loginBtn} cursor-pointer mt-3 p-2`}
           />
+          <div className={styles.checkboxWrapper}>
+            <input
+              type="checkbox"
+              id="checkbox"
+              checked={isAdminChecked}
+              onChange={checkboxHandler}
+            />
+            <label htmlFor="checkbox">Login as Admin</label>
+          </div>
         </form>
-        {err !== "" && <p className="error">{err}</p>}
+        {err !== "" && <p className={styles.err}>{err}</p>}
       </div>
     </main>
   );
