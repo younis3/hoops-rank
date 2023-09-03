@@ -18,6 +18,10 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  max-width: 800px;
+  /* text-align: center; */
+  margin-left: auto; 
+  margin-right: auto; 
   /* background-color: #1a1f1a; */
   /* background-image: linear-gradient(45deg, #f5fff5 0%, #c6c8d1 100%); */
 }

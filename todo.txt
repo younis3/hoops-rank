@@ -1,7 +1,7 @@
 TODO
 ########
 
-# Add Players Page (admin) > player Name and phone Num
+// # Add Players Page (admin) > player Name and phone Num
 # Connect to Firebase DB
 # Display Players List in Add Player Modal + live search bar
 # Finish the logic of adding and removing players on add-pl-score page

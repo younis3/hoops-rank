@@ -1,17 +1,26 @@
+.pageContainer {
+    // max-width: 200px;
+    // margin-left: auto;
+    // margin-right: auto;
+    // background-color: red;
+    overflow: hidden;
+    width: 100%;
+    max-width: 50vw;
+}
+
 .formContainer {
     color: black;
-    width: 98vw;
+    width: 98%;
     display: flex;
     flex-direction: column;
     margin-top: 2vh;
-
     .inputWrapper {
         // margin-top: 2vh;
         // display: flex;
         // flex-direction: row;
         padding: 4px;
         display: inline;
-        margin-left: 1.5vw;
+        margin-left: 1.5%;
     }
 
     .addPlayerWrapper {
@@ -19,7 +28,7 @@
     }
 
     .addPlayer {
-        margin-right: 2.6vw;
+        margin-right: 2.6%;
         padding: 1px;
         cursor: pointer;
         font-size: 26px;
@@ -27,7 +36,7 @@
     }
 
     .addPlayerMVP {
-        margin-right: 2.6vw;
+        margin-right: 2.6%;
         padding: 1px;
         cursor: pointer;
         font-size: 26px;
@@ -37,26 +46,27 @@
     .players {
         margin: 1px;
         margin-top: 0.4vh;
-        background-color: rgba(128, 128, 128, 0.146);
+        // background-color: rgba(128, 128, 128, 0.146);
+        background-color: rgba(0, 0, 0, 0.509);
         height: 60px;
-        width: 94vw;
+        width: 98%;
         padding: 5px;
-        border-radius: 4px;
+        border-radius: 6px;
     }
 
     input {
         width: 72%;
-        margin-left: 1.8vw;
+        margin-left: 1.8%;
         border-bottom: 1.4px solid rgba(0, 0, 0, 0.745);
         outline: none;
     }
     label {
-        margin-left: 0.5vw;
+        margin-left: 0.5%;
         width: 30%;
     }
 
     .scoreInput {
-        width: 15vw;
+        width: 15%;
         border: 1px solid rgba(0, 0, 0, 0.372);
         padding: 1px 6px;
         margin-left: 2vw;
@@ -65,7 +75,8 @@
     }
 
     .mvpInput {
-        width: 62.5vw;
+        width: 66%;
+        max-width: 300px;
     }
 
     .dateInput {
@@ -83,12 +94,13 @@
         background-color: rgba(0, 0, 0, 0.709);
         color: white;
         cursor: pointer;
-        padding: 5px;
+        padding: 6px;
         font-size: 18px;
         margin-top: 5vh;
         text-align: center;
         margin-left: auto;
         margin-right: auto;
-        width: 95vw;
+        width: 95%;
+        border-radius: 6px;
     }
 }
