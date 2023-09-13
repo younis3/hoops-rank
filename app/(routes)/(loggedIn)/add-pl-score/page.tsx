@@ -7,6 +7,9 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AddPlayerScoreModal from "@/app/_components/modals/add-player-score-modal/AddPlayerScoreModal";
 import { useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
+import { addDoc } from "firebase/firestore";
+import { db } from "@/app/firebase";
+import moment from "moment";
 
 interface Player {
   label: string;
@@ -48,7 +51,11 @@ const page = () => {
   const [team1, setTeam1] = useState<Player[]>([]);
   const [team2, setTeam2] = useState<Player[]>([]);
   const [team3, setTeam3] = useState<Player[]>([]);
+  const [scoreTeam1, setScoreTeam1] = useState<number>(0);
+  const [scoreTeam2, setScoreTeam2] = useState<number>(0);
+  const [scoreTeam3, setScoreTeam3] = useState<number>(0);
   const [mvp, setMvp] = useState<Player | null>(null);
+  const [date, setDate] = useState<Date>(new Date());
   const [playersSelect, setPlayersSelect] = useState<Player[]>([
     { label: "Ahmed Y.", id: 1 },
     { label: "Sadin Y.", id: 2 },
@@ -56,6 +63,7 @@ const page = () => {
     { label: "Fathi Y.", id: 4 },
     { label: "Sena Y.", id: 5 },
   ]);
+  const [err, setErr] = useState<string>("");
   // const [disableTeam3, setDisableTeam3] = useState<boolean>(true);
 
   // useEffect(() => {
@@ -118,8 +126,40 @@ const page = () => {
     setPlayerName(null);
     setIsModalVisible(false);
   };
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (scoreTeam1 < 0 || scoreTeam2 < 0 || scoreTeam3 < 0) {
+      setErr("Invalid Score!");
+      return;
+    }
+    if (!team1.length || !team2.length) {
+      setErr("Error: teams are not valid!");
+      return;
+    }
+    if (team1.length < 2 && team2.length < 2 && team3.length > 0) {
+      setErr("Invalid team 3!");
+      return;
+    }
+
+    //check if selected date is valid
+    const todayDate = moment(new Date().getDay());
+    if (moment(new Date(date).getDay()) > todayDate) {
+      setErr("Error: invalid date!");
+      return;
+    }
+
+    //add form result to db
+    // await addDoc(collection(db, "leagueScores"), {
+    //   date:
+    //   name: playerName.trim(),
+    //   number: playerNum.trim(),
+    // }).then(() => {
+    //   if (nameInputRef.current) nameInputRef.current.value = "";
+    //   nameInputRef.current?.focus();
+    //   if (numInputRef.current) numInputRef.current.value = "";
+    //   setPlayersArr([]);
+    //   getData();
+    // });
   };
 
   return (
@@ -131,7 +171,12 @@ const page = () => {
             <label htmlFor="score1" className={styles.scoreLabel}>
               Score:
             </label>
-            <input type="number" id="score1" className={styles.scoreInput} />
+            <input
+              type="number"
+              id="score1"
+              className={styles.scoreInput}
+              onChange={(e) => setScoreTeam1(parseInt(e.target.value))}
+            />
           </div>
           <div className={styles.addPlayerWrapper} onClick={() => openModal(1)}>
             <PersonAddIcon className={styles.addPlayer} />
@@ -159,7 +204,12 @@ const page = () => {
             <label htmlFor="score2" className={styles.scoreLabel}>
               Score:
             </label>
-            <input type="number" id="score2" className={styles.scoreInput} />
+            <input
+              type="number"
+              id="score2"
+              className={styles.scoreInput}
+              onChange={(e) => setScoreTeam2(parseInt(e.target.value))}
+            />
           </div>
           <div className={styles.addPlayerWrapper} onClick={() => openModal(2)}>
             <PersonAddIcon className={styles.addPlayer} />
@@ -184,7 +234,12 @@ const page = () => {
             <label htmlFor="score3" className={styles.scoreLabel}>
               Score:
             </label>
-            <input type="number" id="score3" className={styles.scoreInput} />
+            <input
+              type="number"
+              id="score3"
+              className={styles.scoreInput}
+              onChange={(e) => setScoreTeam3(parseInt(e.target.value))}
+            />
           </div>
 
           <div className={styles.addPlayerWrapper} onClick={() => openModal(3)}>
@@ -218,7 +273,13 @@ const page = () => {
         </div>
         <div className={styles.inputWrapper}>
           <label htmlFor="date">Date</label>
-          <input type="date" id="date" className={styles.dateInput} />
+          <input
+            type="date"
+            id="date"
+            className={styles.dateInput}
+            value={moment(new Date(date)).format("YYYY-MM-DD")}
+            onChange={(e) => setDate(new Date(e.target.value))}
+          />
         </div>
         <div className={`${styles.inputWrapper} ${styles.submitWrapper}`}>
           <input
