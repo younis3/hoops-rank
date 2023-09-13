@@ -16,14 +16,12 @@ const page = () => {
       <div className={styles.underConstruction}>
         <Image src={maintenance} alt={"loading"} width={250} />
       </div>
-      {userRole == "admin" && (
-        <div
-          className={styles.addBtn}
-          onClick={() => router.push("/add-pl-score")}
-        >
-          <PostAddIcon color="action" className={styles.addIcon} />
-        </div>
-      )}
+      <div
+        className={styles.addBtn}
+        onClick={() => router.push("/add-pl-score")}
+      >
+        <PostAddIcon color="action" className={styles.addIcon} />
+      </div>
     </div>
   );
 };
