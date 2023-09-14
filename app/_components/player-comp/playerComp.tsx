@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import styles from "./playerCombo.module.scss";
+import styles from "./playerComp.module.scss";
 import { Player } from "../../models/Player";
 
 interface PlayerNameProps {
@@ -12,7 +12,7 @@ interface PlayerNameProps {
   playersSelectMvp: Player[];
 }
 
-const PlayerCombo: React.FC<PlayerNameProps> = ({
+const PlayerComp: React.FC<PlayerNameProps> = ({
   player,
   setArray,
   arr,
@@ -37,4 +37,4 @@ const PlayerCombo: React.FC<PlayerNameProps> = ({
   );
 };
 
-export default PlayerCombo;
+export default PlayerComp;

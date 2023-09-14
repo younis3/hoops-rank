@@ -11,7 +11,7 @@ import { addDoc } from "firebase/firestore";
 import { db } from "@/app/firebase";
 import moment from "moment";
 import { Player } from "../../../models/Player";
-import PlayerCombo from "../../../_components/player-combo/playerCombo";
+import PlayerComp from "../../../_components/player-comp/playerComp";
 
 const page = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -164,7 +164,7 @@ const page = () => {
           <div className={styles.players} id="team1">
             {team1 && team1.length ? (
               team1.map((p) => (
-                <PlayerCombo
+                <PlayerComp
                   key={Math.random + "i" + p.label}
                   player={p}
                   setArray={setTeam1}
@@ -199,7 +199,7 @@ const page = () => {
 
           <div className={styles.players} id="team2">
             {team2.map((p) => (
-              <PlayerCombo
+              <PlayerComp
                 key={Math.random + "i" + p.label}
                 player={p}
                 setArray={setTeam2}
@@ -231,7 +231,7 @@ const page = () => {
           </div>
           <div className={styles.players} id="team3">
             {team3.map((p) => (
-              <PlayerCombo
+              <PlayerComp
                 key={Math.random + "i" + p.label}
                 player={p}
                 setArray={setTeam3}
