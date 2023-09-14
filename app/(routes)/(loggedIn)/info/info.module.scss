@@ -1,6 +1,29 @@
-.comingSoon {
-    color: black;
-    margin-top: 8vh;
-    text-align: center;
-    font-size: larger;
+.pageWrapper {
+    margin-top: 6vh;
+    h2 {
+        span {
+            font-weight: 700;
+            margin-right: 0.5vw;
+        }
+        margin-top: 2vh;
+        color: rgba(0, 0, 0, 0.621);
+        text-align: center;
+        background-color: rgba(205, 200, 200, 0.373);
+        min-height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .ar {
+            margin-left: 2vw;
+            color: black;
+            font-weight: 600;
+            // font-size: larger;
+        }
+        .scoreVal {
+            color: rgb(54, 149, 141);
+            font-size: smaller;
+            margin-left: 2vw;
+        }
+    }
 }
