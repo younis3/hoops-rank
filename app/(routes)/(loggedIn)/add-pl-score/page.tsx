@@ -123,7 +123,6 @@ const page = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // console.log(userRole);
     if (userRole !== "admin") {
       setErr("Only Admins can update scores!");
       openModal(5);
@@ -394,7 +393,6 @@ const page = () => {
                   <TextField {...params} label="Search" value={playerName} />
                 )}
               />
-
               <input
                 type="submit"
                 className="bg-black text-white p-4 ml-2 cursor-pointer rounded-lg"

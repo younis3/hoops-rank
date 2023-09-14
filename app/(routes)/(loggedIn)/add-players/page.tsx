@@ -53,6 +53,7 @@ const page = () => {
         //number already exists!
         return;
       }
+
       const newPlayerRef = doc(db, "players", playerNum.trim().toString());
       await setDoc(
         newPlayerRef,
