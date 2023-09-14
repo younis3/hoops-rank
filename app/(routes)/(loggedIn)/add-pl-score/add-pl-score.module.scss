@@ -45,7 +45,7 @@
 
     .players {
         margin: 1px;
-        margin-top: 0.4vh;
+        margin-top: 0.3vh;
         margin-bottom: 2vh;
         // background-color: rgba(128, 128, 128, 0.146);
         background-color: rgba(0, 0, 0, 0.509);
@@ -92,6 +92,7 @@
     .mvpInput {
         width: 66%;
         max-width: 300px;
+        margin-top: 1px;
     }
 
     .dateInput {
@@ -111,7 +112,7 @@
         cursor: pointer;
         padding: 6px;
         font-size: 18px;
-        margin-top: 3vh;
+        margin-top: 1.5vh;
         text-align: center;
         margin-left: auto;
         margin-right: auto;
@@ -120,4 +121,20 @@
         width: 98%;
         border-radius: 6px;
     }
+}
+
+.modalWrapper {
+    min-height: 100px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.err {
+    color: red;
+    text-align: center;
+    font-weight: 600;
 }

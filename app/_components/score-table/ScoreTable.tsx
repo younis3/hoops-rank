@@ -8,6 +8,10 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import styles from "./ScoreTable.module.scss";
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { Player } from "../../models/Player";
+import { db } from "@/app/firebase";
 
 interface Column {
   id:
@@ -15,7 +19,6 @@ interface Column {
     | "name"
     | "points"
     | "wins"
-    | "loses"
     | "leagueWins"
     | "cupWins"
     | "mvp"
@@ -33,12 +36,6 @@ const columns: readonly Column[] = [
   {
     id: "wins",
     label: "W",
-    minWidth: 2,
-    align: "center",
-  },
-  {
-    id: "loses",
-    label: "L",
     minWidth: 2,
     align: "center",
   },
@@ -73,61 +70,41 @@ interface Data {
   name: string;
   points: number;
   wins: number;
-  loses: number;
   leagueWins: number;
   cupWins: number;
   mvp: number;
   attends: number;
 }
 
-function createData(
-  rank: number,
-  name: string,
-  wins: number,
-  loses: number,
-  leagueWins: number,
-  cupWins: number,
-  mvp: number,
-  attends: number
-): Data {
-  const points: number =
-    wins * 10 + loses * 2 + leagueWins * 15 + cupWins * 40 + mvp * 10;
-  return {
-    rank,
-    name,
-    points,
-    wins,
-    loses,
-    leagueWins,
-    cupWins,
-    mvp,
-    attends,
-  };
-}
-
-const rows = [
-  createData(1, "Ahmed Y.", 100, 5, 4, 2, 0, 3),
-  createData(2, "Hodifa Y.", 90, 2, 4, 2, 0, 3),
-  createData(3, "Sadin Y.", 100, 4, 4, 2, 0, 3),
-  createData(4, "Sadin Y.", 80, 5, 4, 2, 0, 3),
-  createData(5, "Sadin Y.", 100, 5, 4, 2, 0, 3),
-
-  createData(6, "Ahmed Y.", 100, 5, 4, 2, 0, 3),
-  createData(7, "Hodifa Y.", 100, 5, 4, 2, 0, 3),
-  createData(8, "Sadin Y.", 100, 5, 4, 2, 0, 3),
-  createData(9, "Sadin Y.", 100, 5, 4, 2, 0, 3),
-  createData(10, "Sadin Y.", 100, 5, 4, 2, 0, 3),
-
-  createData(11, "Ahmed Y.", 100, 5, 4, 2, 0, 3),
-  createData(12, "Hodifa Y.", 100, 5, 4, 2, 0, 3),
-  createData(13, "Sadin Y.", 100, 5, 4, 2, 0, 3),
-  createData(14, "Sadin Y.", 100, 5, 4, 2, 0, 3),
-  createData(15, "Sadin Y.", 100, 5, 4, 2, 0, 3),
-];
-
 export default function scoreTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(100);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
+  const [data, setData] = useState<Data[]>([]);
+  const [refresh, setRefresh] = useState<boolean>(false);
+
+  const players2024statsCollection = collection(db, "players2024stats");
+
+  useEffect(() => {
+    (async () => {
+      const querySnapshot = await getDocs(players2024statsCollection);
+      querySnapshot.docs
+        .sort((a, b) => b.data().exp - a.data().exp)
+        .forEach((playerDoc, index) => {
+          const playerStat: Data = {
+            rank: index + 1,
+            name: playerDoc.data().playerName,
+            points: playerDoc.data().exp,
+            wins: playerDoc.data().totalWins,
+            leagueWins: playerDoc.data().leagueWins,
+            cupWins: playerDoc.data().cupWins,
+            mvp: playerDoc.data().mvpCount,
+            attends: playerDoc.data().attCount,
+          };
+          data.push(playerStat);
+          setRefresh(!refresh);
+        });
+    })();
+  }, []);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -167,7 +144,7 @@ export default function scoreTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {data
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
@@ -217,6 +194,7 @@ export default function scoreTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       /> */}
+      <h2 className="mt-2 mb-2 text-center text-sm">2023-2024 Season</h2>
     </Paper>
   );
 }

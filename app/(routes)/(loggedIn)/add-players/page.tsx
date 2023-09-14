@@ -3,15 +3,16 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./add-players.module.scss";
 import {
   collection,
-  doc,
   addDoc,
-  getDoc,
   getDocs,
   query,
   orderBy,
   where,
+  setDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "@/app/firebase";
+import { useUserContext } from "@/app/context/user";
 
 interface Player {
   name: string;
@@ -22,9 +23,12 @@ const page = () => {
   const [playerName, setPlayerName] = useState<string>("");
   const [playerNum, setPlayerNum] = useState<string>("");
   const [playersArr, setPlayersArr] = useState<Player[]>([]);
+  const [err, setErr] = useState<string>("");
 
   const nameInputRef = useRef<HTMLInputElement>(null);
   const numInputRef = useRef<HTMLInputElement>(null);
+
+  const { userRole } = useUserContext();
 
   useEffect(() => {
     getData();
@@ -32,6 +36,12 @@ const page = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (userRole !== "admin") {
+      setErr("Only Admins can add new players!");
+      return;
+    }
+
     if (playerName !== "" && playerNum !== "") {
       //check if player already exists in db
       const q = query(
@@ -43,10 +53,16 @@ const page = () => {
         //number already exists!
         return;
       }
-      await addDoc(collection(db, "players"), {
-        name: playerName.trim(),
-        number: playerNum.trim(),
-      }).then(() => {
+      const newPlayerRef = doc(db, "players", playerNum.trim().toString());
+      await setDoc(
+        newPlayerRef,
+        {
+          name: playerName.trim(),
+          number: playerNum.trim(),
+          id: playerNum.trim(),
+        },
+        { merge: true }
+      ).then(() => {
         if (nameInputRef.current) nameInputRef.current.value = "";
         nameInputRef.current?.focus();
         if (numInputRef.current) numInputRef.current.value = "";
@@ -93,6 +109,7 @@ const page = () => {
         </button>
       </form>
       <div className="m-2">
+        {err !== "" && <p className={styles.err}>{err}</p>}
         <h1 className="mt-5 mb-1 underline">Player List:</h1>
         <ul>
           {playersArr.map((player, i) => (

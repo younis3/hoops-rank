@@ -6,8 +6,9 @@ TODO
 // # Display Players List in Add Player Modal + live search bar
 // # Finish the logic of adding and removing players on add-pl-score page
 // --> # do not duplicate players in lists
-   --> # check if team3 is valid. check if score > 0
-# Save score to DB and update table
-# admin authorizations and error messages
+// --> # check if team3 is valid. check if score > 0
+// # Save score to DB and update table
+// # admin authorizations and error messages
 # info page
 # premier league page (show match history cards)
+# add logout button

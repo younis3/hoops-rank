@@ -1,26 +1,37 @@
 "use client";
 
+import {
+  addDoc,
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  increment,
+} from "firebase/firestore";
+
 import styles from "./add-pl-score.module.scss";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
 import AddPlayerScoreModal from "@/app/_components/modals/add-player-score-modal/AddPlayerScoreModal";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/app/firebase";
 import moment, { max } from "moment";
 import { Player } from "../../../models/Player";
+import { Team } from "../../../models/Team";
+
 import PlayerComp from "../../../_components/player-comp/playerComp";
 import { useRouter } from "next/navigation";
-
-interface Team {
-  id: number;
-  teamPlayers: Player[];
-  score: number;
-}
+import { useUserContext } from "@/app/context/user";
 
 const page = () => {
+  const W_VALUE = 10;
+  const LEG_W_VALUE = 15;
+  const CUP_W_VALUE = 40;
+  const MVP_VALUE = 10;
+  const ATT_VALUE = 5;
+
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [playerName, setPlayerName] = useState<Player | null>(null);
   const [modalNum, setModalNum] = useState<number>(1);
@@ -32,34 +43,28 @@ const page = () => {
   const [scoreTeam3, setScoreTeam3] = useState<number>(0);
   const [mvp, setMvp] = useState<Player | null>(null);
   const [date, setDate] = useState<Date>(new Date());
-  const [playersSelect, setPlayersSelect] = useState<Player[]>([
-    { label: "Ahmed Y.", id: 1 },
-    { label: "Sadin Y.", id: 2 },
-    { label: "Hodifa Y.", id: 3 },
-    { label: "Fathi Y.", id: 4 },
-    { label: "Sena Y.", id: 5 },
-  ]);
+  const [playersSelect, setPlayersSelect] = useState<Player[]>([]);
   const [playerSelectMvp, setPlayerSelectMvp] = useState<Player[]>([]);
   const [err, setErr] = useState<string>("");
   const router = useRouter();
 
-  // const [disableTeam3, setDisableTeam3] = useState<boolean>(true);
+  const { userRole } = useUserContext();
 
-  // useEffect(() => {
-  //   if (team1.length > 1 && team2.length > 1) {
-  //     setDisableTeam3(false);
-  //   } else {
-  //     setDisableTeam3(true);
-  //   }
-  // }, [JSON.stringify(team1), JSON.stringify(team2)]);
+  const leagueScoresCollection = collection(db, "leagueScores");
+  const playersCollection = collection(db, "players");
 
-  // const playersSelect = [
-  //   { label: "Ahmed Y.", id: 1 },
-  //   { label: "Sadin Y.", id: 2 },
-  //   { label: "Hodifa Y.", id: 3 },
-  //   { label: "Fathi Y.", id: 4 },
-  //   { label: "Sena Y.", id: 5 },
-  // ];
+  useEffect(() => {
+    (async () => {
+      const querySnapshot = await getDocs(playersCollection);
+      querySnapshot.forEach((playerDoc) => {
+        const player: Player = {
+          id: playerDoc.data().id,
+          label: playerDoc.data().name,
+        };
+        playersSelect.push(player);
+      });
+    })();
+  }, []);
 
   const openModal = (teamNum: number) => {
     // if (teamNum === 3 && (team2.length < 2 || team1.length < 2)) return;
@@ -118,6 +123,13 @@ const page = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    // console.log(userRole);
+    if (userRole !== "admin") {
+      setErr("Only Admins can update scores!");
+      openModal(5);
+      return;
+    }
+
     if (scoreTeam1 < 0 || scoreTeam2 < 0 || scoreTeam3 < 0) {
       setErr("Invalid Score!");
       return;
@@ -148,7 +160,14 @@ const page = () => {
 
     //check winner
     let winner: Team | null;
-    let teamsList = [teamOne, teamTwo, teamThree];
+
+    let teamsList;
+    if (!team3.length) {
+      teamsList = [teamOne, teamTwo];
+    } else {
+      teamsList = [teamOne, teamTwo, teamThree];
+    }
+
     winner = teamsList.reduce((max, current) =>
       max.score > current.score ? max : current
     );
@@ -159,10 +178,42 @@ const page = () => {
       winner = null;
     }
 
-    console.log(winner);
+    //update players stats in db
+    teamsList.forEach((team) => {
+      team.teamPlayers.map((player) => {
+        const w = team.score;
+        const legW = winner?.teamPlayers?.find((p) => p === player) ? 1 : 0;
+        const cupW = 0;
+        const mvpCount = player === mvp ? 1 : 0;
+        const att = 1;
+        const exp =
+          W_VALUE * w +
+          LEG_W_VALUE * legW +
+          CUP_W_VALUE * cupW +
+          MVP_VALUE * mvpCount +
+          ATT_VALUE * att;
+
+        const playerRef = doc(db, "players2024stats", player.id.toString());
+        setDoc(
+          playerRef,
+          {
+            playerName: player.label,
+            totalWins: increment(w),
+            leagueWins: increment(legW),
+            cupWins: increment(cupW),
+            mvpCount: increment(mvpCount),
+            attCount: increment(att),
+            exp: increment(exp),
+            latestAtt: new Date(),
+            playerId: player.id,
+          },
+          { merge: true }
+        );
+      });
+    });
 
     //add team scores result to db
-    await addDoc(collection(db, "leagueScores"), {
+    await addDoc(leagueScoresCollection, {
       team1: teamOne,
       team2: teamTwo,
       team3: teamThree,
@@ -172,13 +223,6 @@ const page = () => {
     }).then(() => {
       router.push("premier-league");
     });
-
-    //update players stats in db
-    teamsList.forEach((team) => {
-      team.teamPlayers.map((player) => {});
-    });
-
-    await addDoc(collection(db, "players2024stats"), {});
   };
 
   return (
@@ -321,38 +365,45 @@ const page = () => {
         onClose={() => setIsModalVisible(false)}
       >
         <div className={styles.modalWrapper}>
-          <h1 className="text-gray-900 text-center mb-2">Add Player</h1>
-          <form
-            action="submit"
-            onSubmit={hanldleModalSubmit}
-            className="flex items-center justify-center"
-          >
-            <Autocomplete
-              disablePortal
-              id="addPlayersAutoComplete"
-              options={modalNum === 4 ? playerSelectMvp : playersSelect}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              key={Math.random()}
-              sx={{ width: 300 }}
-              value={playerName}
-              onChange={(event, newValue) => setPlayerName(newValue)}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.id}>
-                    {option.label}
-                  </li>
-                );
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="Search" value={playerName} />
-              )}
-            />
-            <input
-              type="submit"
-              className="bg-black text-white p-2 cursor-pointer"
-              value="Add"
-            />
-          </form>
+          {modalNum <= 4 && (
+            <h1 className="text-gray-900 text-center mb-2">Add Player</h1>
+          )}
+          {modalNum <= 4 && (
+            <form
+              action="submit"
+              onSubmit={hanldleModalSubmit}
+              className="flex items-center justify-center"
+            >
+              <Autocomplete
+                disablePortal
+                id="addPlayersAutoComplete"
+                options={modalNum === 4 ? playerSelectMvp : playersSelect}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                key={Math.random()}
+                sx={{ width: 300 }}
+                value={playerName}
+                onChange={(event, newValue) => setPlayerName(newValue)}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.id}>
+                      {option.label}
+                    </li>
+                  );
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Search" value={playerName} />
+                )}
+              />
+
+              <input
+                type="submit"
+                className="bg-black text-white p-4 ml-2 cursor-pointer rounded-lg"
+                value="Add"
+              />
+            </form>
+          )}
+
+          {modalNum === 5 && <h1 className={styles.err}>{err}</h1>}
         </div>
       </AddPlayerScoreModal>
     </div>

@@ -15,7 +15,7 @@ interface ContextProps {
 
 const UserContext = createContext<ContextProps>({
   userRole: "",
-  setUserRole: (): string => "normal",
+  setUserRole: (): string => "user",
 });
 
 export const UserContextProvider = ({ children }: any) => {

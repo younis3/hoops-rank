@@ -37,7 +37,7 @@ export default function Login() {
     } else {
       if (pass === process.env.NEXT_PUBLIC_PASSWORD) {
         setErr("");
-        setUserRole("normal");
+        setUserRole("user");
         router.push("/home");
       } else {
         setErr("Wrong Password!");

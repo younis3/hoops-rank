@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import Icon from "@mui/material/Icon";
 import HelpIcon from "@mui/icons-material/Help";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 export default function Nav() {
   const router = useRouter();
@@ -51,6 +52,14 @@ export default function Nav() {
       >
         <HelpIcon color="action" className={styles.infoIcon} />
       </div>
+
+      <div
+        className={styles.playerAddWrapper}
+        onClick={() => handleRoute("add-players")}
+      >
+        <PersonAddIcon color="action" className={styles.infoIcon} />
+      </div>
+
       <div className={styles.menuWrapper1}>
         <ul className={styles.menu}>
           <li>Events</li>

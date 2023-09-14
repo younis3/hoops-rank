@@ -22,7 +22,22 @@ $small-screen: 800px;
     font-size: small;
     position: absolute;
     right: 1%;
-    bottom: 26.5%;
+    bottom: 24.5%;
+    padding: 4px;
+    .infoIcon {
+        font-size: 26px;
+        &:hover {
+            color: rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+        }
+    }
+}
+
+.playerAddWrapper {
+    font-size: small;
+    position: absolute;
+    right: 7%;
+    bottom: 24.5%;
     padding: 4px;
     .infoIcon {
         font-size: 26px;
@@ -126,7 +141,14 @@ $small-screen: 800px;
         right: 1%;
         bottom: 30%;
         .infoIcon {
-            font-size: 24px;
+            font-size: 23px;
+        }
+    }
+    .playerAddWrapper {
+        right: 9.2%;
+        bottom: 30%;
+        .infoIcon {
+            font-size: 23px;
         }
     }
 }
