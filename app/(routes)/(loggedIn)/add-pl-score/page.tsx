@@ -7,11 +7,18 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AddPlayerScoreModal from "@/app/_components/modals/add-player-score-modal/AddPlayerScoreModal";
 import { useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { addDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/app/firebase";
-import moment from "moment";
+import moment, { max } from "moment";
 import { Player } from "../../../models/Player";
 import PlayerComp from "../../../_components/player-comp/playerComp";
+import { useRouter } from "next/navigation";
+
+interface Team {
+  id: number;
+  teamPlayers: Player[];
+  score: number;
+}
 
 const page = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -34,6 +41,8 @@ const page = () => {
   ]);
   const [playerSelectMvp, setPlayerSelectMvp] = useState<Player[]>([]);
   const [err, setErr] = useState<string>("");
+  const router = useRouter();
+
   // const [disableTeam3, setDisableTeam3] = useState<boolean>(true);
 
   // useEffect(() => {
@@ -108,6 +117,7 @@ const page = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (scoreTeam1 < 0 || scoreTeam2 < 0 || scoreTeam3 < 0) {
       setErr("Invalid Score!");
       return;
@@ -128,18 +138,47 @@ const page = () => {
       return;
     }
 
-    //add form result to db
-    // await addDoc(collection(db, "leagueScores"), {
-    //   date:
-    //   name: playerName.trim(),
-    //   number: playerNum.trim(),
-    // }).then(() => {
-    //   if (nameInputRef.current) nameInputRef.current.value = "";
-    //   nameInputRef.current?.focus();
-    //   if (numInputRef.current) numInputRef.current.value = "";
-    //   setPlayersArr([]);
-    //   getData();
-    // });
+    if (!team3.length) {
+      setScoreTeam3(0);
+    }
+
+    const teamOne: Team = { id: 1, teamPlayers: team1, score: scoreTeam1 };
+    const teamTwo: Team = { id: 2, teamPlayers: team2, score: scoreTeam2 };
+    const teamThree: Team = { id: 3, teamPlayers: team3, score: scoreTeam3 };
+
+    //check winner
+    let winner: Team | null;
+    let teamsList = [teamOne, teamTwo, teamThree];
+    winner = teamsList.reduce((max, current) =>
+      max.score > current.score ? max : current
+    );
+
+    //check if max score is tied with another team
+    let arr = teamsList.filter((t) => t.score === winner?.score);
+    if (arr.length > 1) {
+      winner = null;
+    }
+
+    console.log(winner);
+
+    //add team scores result to db
+    await addDoc(collection(db, "leagueScores"), {
+      team1: teamOne,
+      team2: teamTwo,
+      team3: teamThree,
+      winnerTeam: winner,
+      mvp: mvp,
+      date: date,
+    }).then(() => {
+      router.push("premier-league");
+    });
+
+    //update players stats in db
+    teamsList.forEach((team) => {
+      team.teamPlayers.map((player) => {});
+    });
+
+    await addDoc(collection(db, "players2024stats"), {});
   };
 
   return (
@@ -221,6 +260,7 @@ const page = () => {
             <input
               type="number"
               id="score3"
+              disabled={team3.length === 0 ? true : false}
               className={styles.scoreInput}
               onChange={(e) => setScoreTeam3(parseInt(e.target.value))}
             />
