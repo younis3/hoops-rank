@@ -13,7 +13,7 @@ import styles from "./add-pl-score.module.scss";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
-import AddPlayerScoreModal from "@/app/_components/modals/add-player-score-modal/AddPlayerScoreModal";
+import AddPlayerScoreModal from "../../../_components/modals/add-player-score-modal/AddPlayerScoreModal";
 import { useContext, useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { db } from "@/app/firebase";
