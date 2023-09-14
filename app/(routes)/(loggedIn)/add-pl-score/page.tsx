@@ -143,8 +143,9 @@ const page = () => {
     }
 
     //check if selected date is valid
-    const todayDate = moment(new Date().getDay());
-    if (moment(new Date(date).getDay()) > todayDate) {
+    const todayDate = new Date();
+
+    if (date > todayDate) {
       setErr("Error: invalid date!");
       return;
     }
@@ -334,7 +335,7 @@ const page = () => {
             id="mvp"
             readOnly={true}
             className={styles.mvpInput}
-            value={mvp?.label}
+            value={mvp ? mvp.label : ""}
           />
           <div className={styles.addPlayerWrapper} onClick={() => openModal(4)}>
             <EmojiEventsIcon className={styles.addPlayerMVP} />
