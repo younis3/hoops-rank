@@ -10,39 +10,8 @@ import { Autocomplete, TextField } from "@mui/material";
 import { addDoc } from "firebase/firestore";
 import { db } from "@/app/firebase";
 import moment from "moment";
-
-interface Player {
-  label: string;
-  id: number;
-  teamNum?: number;
-}
-
-interface PlayerNameProps {
-  player: Player;
-  setArray: React.Dispatch<React.SetStateAction<Player[]>>;
-  arr: Player[];
-  playersSelect: Player[];
-}
-
-const PlayerCombo: React.FC<PlayerNameProps> = ({
-  player,
-  setArray,
-  arr,
-  playersSelect,
-}) => {
-  const removeP = () => {
-    setArray(arr.filter((p: Player) => p.id !== player.id));
-    playersSelect.push(player);
-  };
-  return (
-    <div className={styles.playerComboWrapper}>
-      <div className={styles.playerComboContent}>{player.label}</div>
-      <button className={styles.playerComboXBtn} onClick={() => removeP()}>
-        X
-      </button>
-    </div>
-  );
-};
+import { Player } from "../../../models/Player";
+import PlayerCombo from "../../../_components/player-combo/playerCombo";
 
 const page = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -63,6 +32,7 @@ const page = () => {
     { label: "Fathi Y.", id: 4 },
     { label: "Sena Y.", id: 5 },
   ]);
+  const [playerSelectMvp, setPlayerSelectMvp] = useState<Player[]>([]);
   const [err, setErr] = useState<string>("");
   // const [disableTeam3, setDisableTeam3] = useState<boolean>(true);
 
@@ -84,48 +54,58 @@ const page = () => {
 
   const openModal = (teamNum: number) => {
     // if (teamNum === 3 && (team2.length < 2 || team1.length < 2)) return;
-    setIsModalVisible(true);
     setModalNum(teamNum);
+    setIsModalVisible(true);
   };
 
   const hanldleModalSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (playerName === null) {
-      return;
+    if (modalNum !== 4) {
+      if (playerName === null) {
+        return;
+      }
+
+      if (
+        team1?.find((e) => e.id === playerName.id) ||
+        team2?.find((e) => e.id === playerName.id) ||
+        team3?.find((e) => e.id === playerName.id)
+      ) {
+        return;
+      }
     }
-    if (
-      team1?.find((e) => e.id === playerName.id) ||
-      team2?.find((e) => e.id === playerName.id) ||
-      team3?.find((e) => e.id === playerName.id)
-    ) {
-      return;
-    }
-    if (modalNum === 1) {
-      if (team1.length < 6) {
-        //limit 6 players per team
-        playerName.teamNum = 1;
-        team1.push(playerName);
+    if (playerName) {
+      if (modalNum === 1) {
+        if (team1.length < 6) {
+          //limit 6 players per team
+          playerName.teamNum = 1;
+          team1.push(playerName);
+          playerSelectMvp.push(playerName); //add to mvp select array
+        }
+      } else if (modalNum === 2) {
+        if (team2.length < 6) {
+          playerName.teamNum = 2;
+          team2.push(playerName);
+          playerSelectMvp.push(playerName);
+        }
+      } else if (modalNum === 3) {
+        if (team3.length < 6) {
+          playerName.teamNum = 3;
+          team3.push(playerName);
+          playerSelectMvp.push(playerName);
+        }
+      } else if (modalNum === 4) {
+        setMvp(playerName);
       }
-    } else if (modalNum === 2) {
-      if (team2.length < 6) {
-        playerName.teamNum = 2;
-        team2.push(playerName);
-      }
-    } else if (modalNum === 3) {
-      if (team3.length < 6) {
-        playerName.teamNum = 3;
-        team3.push(playerName);
-      }
-    } else if (modalNum === 4) {
-      setMvp(playerName);
+
+      setPlayersSelect(
+        playersSelect.filter((p: Player) => p.id !== playerName.id)
+      );
     }
 
-    setPlayersSelect(
-      playersSelect.filter((p: Player) => p.id !== playerName.id)
-    );
     setPlayerName(null);
     setIsModalVisible(false);
   };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (scoreTeam1 < 0 || scoreTeam2 < 0 || scoreTeam3 < 0) {
@@ -190,6 +170,8 @@ const page = () => {
                   setArray={setTeam1}
                   arr={team1}
                   playersSelect={playersSelect}
+                  playersSelectMvp={playerSelectMvp}
+                  setPlayersSelectMvp={setPlayerSelectMvp}
                 />
               ))
             ) : (
@@ -223,6 +205,8 @@ const page = () => {
                 setArray={setTeam2}
                 arr={team2}
                 playersSelect={playersSelect}
+                playersSelectMvp={playerSelectMvp}
+                setPlayersSelectMvp={setPlayerSelectMvp}
               />
             ))}
           </div>
@@ -253,6 +237,8 @@ const page = () => {
                 setArray={setTeam3}
                 arr={team3}
                 playersSelect={playersSelect}
+                playersSelectMvp={playerSelectMvp}
+                setPlayersSelectMvp={setPlayerSelectMvp}
               />
             ))}
           </div>
@@ -304,7 +290,7 @@ const page = () => {
             <Autocomplete
               disablePortal
               id="addPlayersAutoComplete"
-              options={playersSelect}
+              options={modalNum === 4 ? playerSelectMvp : playersSelect}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               key={Math.random()}
               sx={{ width: 300 }}
