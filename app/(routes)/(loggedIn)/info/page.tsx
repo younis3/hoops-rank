@@ -1,12 +1,14 @@
 import React from "react";
 import styles from "./info.module.scss";
+import {
+  W_VALUE,
+  LEG_W_VALUE,
+  CUP_W_VALUE,
+  MVP_VALUE,
+  ATT_VALUE,
+} from "../../../values";
 
 const page = () => {
-  const W_VALUE = 10;
-  const LEG_W_VALUE = 15;
-  const CUP_W_VALUE = 40;
-  const MVP_VALUE = 10;
-  const ATT_VALUE = 5;
   return (
     <div className={styles.pageWrapper}>
       <h2>
