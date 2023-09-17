@@ -24,14 +24,15 @@ import { Team } from "../../../models/Team";
 import PlayerComp from "../../../_components/player-comp/playerComp";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/app/context/user";
+import {
+  W_VALUE,
+  LEG_W_VALUE,
+  CUP_W_VALUE,
+  MVP_VALUE,
+  ATT_VALUE,
+} from "../../../values";
 
 const page = () => {
-  const W_VALUE = 10;
-  const LEG_W_VALUE = 15;
-  const CUP_W_VALUE = 40;
-  const MVP_VALUE = 10;
-  const ATT_VALUE = 5;
-
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [playerName, setPlayerName] = useState<Player | null>(null);
   const [modalNum, setModalNum] = useState<number>(1);
