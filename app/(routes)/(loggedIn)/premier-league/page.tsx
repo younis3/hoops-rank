@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 const page = () => {
   const [data, setData] = useState<any[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [total, setTotal] = useState<number>(0);
 
   const { userRole } = useUserContext();
   const router = useRouter();
@@ -22,6 +23,7 @@ const page = () => {
   useEffect(() => {
     (async () => {
       const querySnapshot = await getDocs(gamesResultsCollection);
+      let counter: number = 0;
       querySnapshot.docs
         .sort((a, b) => b.data().date - a.data().date)
         .forEach((playerDoc, index) => {
@@ -33,20 +35,30 @@ const page = () => {
             mvp: playerDoc.data().mvp,
             date: playerDoc.data().date,
           };
+          counter++;
           data.push(result);
         });
+      setTotal(counter);
       setRefresh(!refresh);
     })();
   }, []);
 
   return (
     <div className={styles.page}>
-      <div
-        className={styles.addBtn}
-        onClick={() => router.push("/add-pl-score")}
-      >
-        <PostAddIcon color="action" className={styles.addIcon} />
+      <div className={styles.totalAndBtnWrapper}>
+        <div className={styles.total}>
+          <p>
+            Total <span>{total}</span>
+          </p>
+        </div>
+        <div
+          className={styles.addBtn}
+          onClick={() => router.push("/add-pl-score")}
+        >
+          <PostAddIcon color="action" className={styles.addIcon} />
+        </div>
       </div>
+
       <div className={styles.results}>
         {data?.map((res) => (
           <GameRes

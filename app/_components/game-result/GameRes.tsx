@@ -15,11 +15,12 @@ interface GameResProps {
 
 const GameRes: React.FC<GameResProps> = ({ teams, winnerTeam, mvp, date }) => {
   const [refresh, setRefresh] = useState<boolean>(false);
+  const weekday: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const convertDate = (date: Timestamp): string => {
     const timeStamp = new Timestamp(date.seconds, date.nanoseconds);
-    const covertedDate = timeStamp.toDate();
-    return moment(new Date(covertedDate)).format("YYYY-MM-DD");
+    const convertedDate = timeStamp.toDate();
+    return moment(new Date(convertedDate)).format("DD-MM-YYYY");
   };
 
   useEffect(() => {
@@ -29,6 +30,14 @@ const GameRes: React.FC<GameResProps> = ({ teams, winnerTeam, mvp, date }) => {
   return (
     <div className={styles.componentContainer}>
       <div>
+        <p className={styles.date}>
+          {
+            weekday[
+              new Timestamp(date.seconds, date.nanoseconds).toDate().getDay()
+            ]
+          }
+        </p>
+        <span>, </span>
         <p className={styles.date}>{convertDate(date)}</p>
       </div>
       {teams.length &&

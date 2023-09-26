@@ -5,10 +5,38 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: auto;
+    width: 98%;
+}
+.totalAndBtnWrapper {
+    margin-top: 2vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(101, 83, 83, 0.06);
+    width: 95%;
+    max-width: 585px;
+
+    border-radius: 10px;
+}
+
+.total {
+    color: black;
+    padding: 4px;
+    margin-right: 20vw;
+    font-weight: 500;
+    p {
+        padding: 2px;
+
+        font-size: smaller;
+    }
+    span {
+        display: block;
+        font-size: large;
+    }
 }
 
 .addBtn {
-    margin-top: 1vh;
     padding: 6px;
     cursor: pointer;
     .addIcon {
@@ -18,4 +46,6 @@
 
 .results {
     margin-bottom: 3.5vh;
+    width: 97%;
+    max-width: 600px;
 }
