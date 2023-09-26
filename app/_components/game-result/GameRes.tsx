@@ -37,7 +37,7 @@ const GameRes: React.FC<GameResProps> = ({ teams, winnerTeam, mvp, date }) => {
             ]
           }
         </p>
-        <span>, </span>
+        <span className="text-white"> | </span>
         <p className={styles.date}>{convertDate(date)}</p>
       </div>
       {teams.length &&
