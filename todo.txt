@@ -9,6 +9,8 @@ TODO
 // --> # check if team3 is valid. check if score > 0
 // # Save score to DB and update table
 // # admin authorizations and error messages
-# info page
-# premier league page (show match history cards)
+// # info page
+// # premier league page (show match history cards)
+# delete games and decrease score
+# add conscutive wins property tp player stats collection
 # add logout button
