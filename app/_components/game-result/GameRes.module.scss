@@ -8,7 +8,7 @@
         #949494c0,
         #757575
     ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    width: 97%;
+    width: 100%;
     text-align: center;
     border-radius: 15px;
     padding: 10px;
@@ -19,6 +19,21 @@
     .date {
         color: white;
         display: inline-block;
+    }
+    .firstRowWrapper {
+        width: 100%;
+        position: relative;
+        .removeBtn {
+            position: absolute;
+            right: 8px;
+            background-color: rgba(170, 43, 43, 0.667);
+            border-radius: 5px;
+            padding: 1px 6px;
+            font-size: smaller;
+        }
+        .removeBtn:hover {
+            background-color: rgba(201, 17, 17, 0.667);
+        }
     }
 }
 

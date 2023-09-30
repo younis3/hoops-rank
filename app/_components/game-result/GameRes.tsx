@@ -5,16 +5,27 @@ import { Team } from "@/app/models/Team";
 import { Player } from "@/app/models/Player";
 import moment from "moment";
 import { Timestamp } from "firebase/firestore";
+import { db } from "@/app/firebase";
+import { useUserContext } from "@/app/context/user";
 
 interface GameResProps {
   teams: Team[];
   winnerTeam: Team;
   mvp: Player;
   date: Timestamp;
+  removeResCard(i: number): void;
 }
 
-const GameRes: React.FC<GameResProps> = ({ teams, winnerTeam, mvp, date }) => {
+const GameRes: React.FC<GameResProps> = ({
+  teams,
+  winnerTeam,
+  mvp,
+  date,
+  removeResCard,
+}) => {
   const [refresh, setRefresh] = useState<boolean>(false);
+  const { userRole } = useUserContext();
+
   const weekday: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const convertDate = (date: Timestamp): string => {
@@ -23,13 +34,9 @@ const GameRes: React.FC<GameResProps> = ({ teams, winnerTeam, mvp, date }) => {
     return moment(new Date(convertedDate)).format("DD-MM-YYYY");
   };
 
-  useEffect(() => {
-    // console.log(teams);
-  }, []);
-
   return (
     <div className={styles.componentContainer}>
-      <div>
+      <div className={styles.firstRowWrapper}>
         <p className={styles.date}>
           {
             weekday[
@@ -39,10 +46,13 @@ const GameRes: React.FC<GameResProps> = ({ teams, winnerTeam, mvp, date }) => {
         </p>
         <span className="text-white">, </span>
         <p className={styles.date}>{convertDate(date)}</p>
+        <button className={styles.removeBtn} onClick={() => removeResCard}>
+          X
+        </button>
       </div>
       {teams.length &&
         teams.map((team) =>
-          team.teamPlayers.length > 0 ? (
+          team?.teamPlayers.length > 0 ? (
             <div key={Math.random()} className={styles.teamWrapper}>
               {team.id === winnerTeam.id && <p className="pr-1 text-lg">🏆 </p>}
 
