@@ -130,9 +130,15 @@ export default function scoreTable() {
               playerDoc.data().playerId === recentMvpRef.current?.id
                 ? "🥇"
                 : "";
+            const onFireEmoji =
+              playerDoc.data().playerName === "Aubida" ? "🔥" : "";
             const playerStat: Data = {
               rank: index + 1,
-              name: playerDoc.data().playerName + legWinnerEmoji + mvpEmoji,
+              name:
+                playerDoc.data().playerName +
+                legWinnerEmoji +
+                mvpEmoji +
+                onFireEmoji,
               points: playerDoc.data().exp,
               wins: playerDoc.data().totalWins,
               leagueWins: playerDoc.data().leagueWins,

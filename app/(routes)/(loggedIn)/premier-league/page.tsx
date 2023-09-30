@@ -8,14 +8,15 @@ import { useUserContext } from "@/app/context/user";
 import { useRouter } from "next/navigation";
 import GameRes from "../../../_components/game-result/GameRes";
 import { db } from "@/app/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import Alert from "@mui/material/Alert";
 
 const page = () => {
   const [data, setData] = useState<any[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(0);
-
+  const [err, setErr] = useState<string | null>(null);
   const { userRole } = useUserContext();
   const router = useRouter();
   const gamesResultsCollection = collection(db, "leagueScores");
@@ -26,14 +27,14 @@ const page = () => {
       let counter: number = 0;
       querySnapshot.docs
         .sort((a, b) => b.data().date - a.data().date)
-        .forEach((playerDoc, index) => {
+        .forEach((gameRes, index) => {
           const result: {} = {
-            team1: playerDoc.data().team1,
-            team2: playerDoc.data().team2,
-            team3: playerDoc.data().team3,
-            winnerTeam: playerDoc.data().winnerTeam,
-            mvp: playerDoc.data().mvp,
-            date: playerDoc.data().date,
+            team1: gameRes.data().team1,
+            team2: gameRes.data().team2,
+            team3: gameRes.data().team3,
+            winnerTeam: gameRes.data().winnerTeam,
+            mvp: gameRes.data().mvp,
+            date: gameRes.data().date,
           };
           counter++;
           data.push(result);
@@ -42,6 +43,17 @@ const page = () => {
       setRefresh(!refresh);
     })();
   }, []);
+
+  const removeResCard = async (i: number) => {
+    console.log("XXXX");
+
+    if (userRole !== "admin") {
+      setErr("Only Admins can add new players!");
+      return;
+    }
+    // const cardToDel = data[i];
+    // await deleteDoc(doc(db, "leagueScores", cardToDel));
+  };
 
   return (
     <div className={styles.page}>
@@ -58,15 +70,16 @@ const page = () => {
           <PostAddIcon color="action" className={styles.addIcon} />
         </div>
       </div>
-
+      {err && <Alert severity="error">{err}</Alert>}
       <div className={styles.results}>
-        {data?.map((res) => (
+        {data?.map((res, i) => (
           <GameRes
             key={Math.random()}
             teams={[res.team1, res.team2, res.team3]}
             winnerTeam={res.winnerTeam}
             mvp={res.mvp}
             date={res.date}
+            removeResCard={() => removeResCard(i)}
           />
         ))}
       </div>
