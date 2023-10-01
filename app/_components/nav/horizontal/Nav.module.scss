@@ -5,7 +5,6 @@ $small-screen: 800px;
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
-    // display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 0 auto;
@@ -18,14 +17,48 @@ $small-screen: 800px;
     width: 320px;
 }
 
+.firstRowMenuWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    margin-top: 2vh;
+}
+
+.logoutWrapper {
+    font-size: small;
+    position: absolute;
+    left: 3%;
+    // top: 10.5vh;
+    padding: 4px;
+    span {
+        color: black;
+        margin-right: 2.5px;
+        &:hover {
+            color: rgba(0, 0, 0, 0.8);
+            font-weight: 600;
+            cursor: pointer;
+        }
+    }
+    .logoutIcon {
+        font-size: 16px;
+        &:hover {
+            color: rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+        }
+    }
+}
+
 .infoIconWrapper {
     font-size: small;
     position: absolute;
-    right: 1%;
-    bottom: 24.5%;
+    right: 3%;
     padding: 4px;
+    margin-right: 0.8vw;
     .infoIcon {
         font-size: 26px;
+        font-size: 23px;
         &:hover {
             color: rgba(0, 0, 0, 0.8);
             cursor: pointer;
@@ -36,11 +69,12 @@ $small-screen: 800px;
 .playerAddWrapper {
     font-size: small;
     position: absolute;
-    right: 7%;
-    bottom: 24.5%;
+    right: 9%;
     padding: 4px;
+    margin-right: 0.8vw;
     .infoIcon {
         font-size: 26px;
+        font-size: 23px;
         &:hover {
             color: rgba(0, 0, 0, 0.8);
             cursor: pointer;
@@ -51,7 +85,6 @@ $small-screen: 800px;
 .menuWrapper1 {
     color: black;
     text-align: center;
-    margin-top: 2.4vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,23 +95,14 @@ $small-screen: 800px;
         justify-content: center;
         align-items: center;
         width: 40vw;
-        // background-color: red;
         li {
             text-align: center;
-
-            // display: inline-block;
             padding: 2px;
             text-decoration: underline;
             padding-left: 5px;
             padding-right: 5px;
-            // margin-left: 0.6vw;
-            // margin-right: 0.5vw;
-            // display: flex;
             align-items: center;
             cursor: pointer;
-            // border: 1px solid rgba(0, 0, 0, 0.177);
-            // border-radius: 8%;
-            // background-color: rgba(128, 128, 128, 0.189);
         }
     }
 }
@@ -105,7 +129,6 @@ $small-screen: 800px;
             display: flex;
             align-items: center;
             cursor: pointer;
-            // border: 1px solid rgba(0, 0, 0, 0.177);
             border-radius: 8%;
             background-color: rgba(128, 128, 128, 0.189);
             -webkit-transition: 0.6s; /* Safari */
@@ -124,29 +147,17 @@ $small-screen: 800px;
 }
 
 @media screen and (max-width: 700px) {
-    // .headerx {
-    //     background-color: red;
-    //     // width: 90vw;
-    //     // margin-left: auto;
-    //     // margin-right: auto;
-    //     display: flex !important;
-    //     // justify-content: space-between;
-    //     // align-items: center;
-    //     // margin: 0 auto;
-    // }
     .logo {
         width: 220px;
     }
+
     .infoIconWrapper {
         right: 1%;
-        bottom: 30%;
         .infoIcon {
             font-size: 23px;
         }
     }
     .playerAddWrapper {
-        right: 9.2%;
-        bottom: 30%;
         .infoIcon {
             font-size: 23px;
         }

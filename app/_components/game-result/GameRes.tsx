@@ -5,7 +5,6 @@ import { Team } from "@/app/models/Team";
 import { Player } from "@/app/models/Player";
 import moment from "moment";
 import { Timestamp } from "firebase/firestore";
-import { db } from "@/app/firebase";
 import { useUserContext } from "@/app/context/user";
 
 interface GameResProps {
@@ -13,7 +12,7 @@ interface GameResProps {
   winnerTeam: Team;
   mvp: Player;
   date: Timestamp;
-  removeResCard(i: number): void;
+  removeResCard(): Promise<void>;
 }
 
 const GameRes: React.FC<GameResProps> = ({
@@ -34,6 +33,10 @@ const GameRes: React.FC<GameResProps> = ({
     return moment(new Date(convertedDate)).format("DD-MM-YYYY");
   };
 
+  const handleRemoveCard = () => {
+    removeResCard();
+  };
+
   return (
     <div className={styles.componentContainer}>
       <div className={styles.firstRowWrapper}>
@@ -46,7 +49,7 @@ const GameRes: React.FC<GameResProps> = ({
         </p>
         <span className="text-white">, </span>
         <p className={styles.date}>{convertDate(date)}</p>
-        <button className={styles.removeBtn} onClick={() => removeResCard}>
+        <button className={styles.removeBtn} onClick={handleRemoveCard}>
           X
         </button>
       </div>

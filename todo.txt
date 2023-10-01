@@ -10,7 +10,7 @@ TODO
 // # Save score to DB and update table
 // # admin authorizations and error messages
 // # info page
+// # add logout button
 // # premier league page (show match history cards)
-# delete games and decrease score
-# add conscutive wins property tp player stats collection
-# add logout button
+// # delete games and decrease score
+# add conscutive wins property to player stats collection
