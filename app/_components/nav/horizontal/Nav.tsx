@@ -8,6 +8,7 @@ import { useEffect, useRef } from "react";
 import Icon from "@mui/material/Icon";
 import HelpIcon from "@mui/icons-material/Help";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export default function Nav() {
   const router = useRouter();
@@ -46,26 +47,34 @@ export default function Nav() {
         alt="player basketball"
         className={styles.logo}
       />
-      <div
-        className={styles.infoIconWrapper}
-        onClick={() => handleRoute("info")}
-      >
-        <HelpIcon color="action" className={styles.infoIcon} />
-      </div>
 
-      <div
-        className={styles.playerAddWrapper}
-        onClick={() => handleRoute("add-players")}
-      >
-        <PersonAddIcon color="action" className={styles.infoIcon} />
-      </div>
+      <div className={styles.firstRowMenuWrapper}>
+        <div className={styles.logoutWrapper} onClick={() => handleRoute("/")}>
+          <span>Logout</span>
+          <LogoutIcon color="action" className={styles.logoutIcon} />
+        </div>
 
-      <div className={styles.menuWrapper1}>
-        <ul className={styles.menu}>
-          <li>Events</li>
-          <li>Gallery</li>
-          <li>Videos</li>
-        </ul>
+        <div
+          className={styles.infoIconWrapper}
+          onClick={() => handleRoute("info")}
+        >
+          <HelpIcon color="action" className={styles.infoIcon} />
+        </div>
+
+        <div
+          className={styles.playerAddWrapper}
+          onClick={() => handleRoute("add-players")}
+        >
+          <PersonAddIcon color="action" className={styles.infoIcon} />
+        </div>
+
+        <div className={styles.menuWrapper1}>
+          <ul className={styles.menu}>
+            <li>Events</li>
+            <li>Gallery</li>
+            <li>Videos</li>
+          </ul>
+        </div>
       </div>
 
       <div className={styles.menuWrapper2}>
