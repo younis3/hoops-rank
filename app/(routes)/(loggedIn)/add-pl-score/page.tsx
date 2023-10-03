@@ -7,6 +7,9 @@ import {
   setDoc,
   getDocs,
   increment,
+  where,
+  query,
+  limit,
 } from "firebase/firestore";
 
 import styles from "./add-pl-score.module.scss";
@@ -121,6 +124,54 @@ const page = () => {
     setIsModalVisible(false);
   };
 
+  const updateStreak = async (player: Player, legW: number) => {
+    const q = query(
+      collection(db, "streakHistory2024"),
+      where("playerId", "==", player.id.toString()),
+      limit(1)
+    );
+
+    let isNew: boolean;
+    let currStreakOld: number = 0;
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      //document doesn't exist. create new
+      isNew = true;
+    } else {
+      isNew = false;
+      currStreakOld = querySnapshot.docs[0].data().currStreak;
+      console.log(currStreakOld);
+    }
+
+    const streakHistoryRef = doc(db, "streakHistory2024", player.id.toString());
+
+    if (isNew) {
+      setDoc(
+        streakHistoryRef,
+        {
+          playerName: player.label,
+          playerId: player.id,
+          streakBefore: 0,
+          currStreak: legW === 1 ? 1 : 0,
+          dateUpdated: new Date(),
+        },
+        { merge: true }
+      );
+    } else {
+      setDoc(
+        streakHistoryRef,
+        {
+          playerName: player.label,
+          playerId: player.id,
+          streakBefore: currStreakOld,
+          currStreak: legW === 1 ? increment(legW) : 0,
+          dateUpdated: new Date(),
+        },
+        { merge: true }
+      );
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -193,6 +244,8 @@ const page = () => {
           CUP_W_VALUE * cupW +
           MVP_VALUE * mvpCount +
           ATT_VALUE * att;
+
+        updateStreak(player, legW); //update player wins streak in streak history collection
 
         const playerRef = doc(db, "players2024stats", player.id.toString());
         setDoc(
