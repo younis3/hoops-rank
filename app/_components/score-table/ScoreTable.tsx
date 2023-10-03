@@ -254,7 +254,7 @@ export default function scoreTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       /> */}
-        <h2 className="mt-2 mb-2 text-center text-sm">2023-2024 Season</h2>
+        <h2 className="mt-3 mb-2 text-center text-sm">2023-2024 Season</h2>
       </Paper>
     );
   }
