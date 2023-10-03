@@ -140,7 +140,6 @@ const page = () => {
     } else {
       isNew = false;
       currStreakOld = querySnapshot.docs[0].data().currStreak;
-      console.log(currStreakOld);
     }
 
     const streakHistoryRef = doc(db, "streakHistory2024", player.id.toString());
@@ -161,8 +160,6 @@ const page = () => {
       setDoc(
         streakHistoryRef,
         {
-          playerName: player.label,
-          playerId: player.id,
           streakBefore: currStreakOld,
           currStreak: legW === 1 ? increment(legW) : 0,
           dateUpdated: new Date(),

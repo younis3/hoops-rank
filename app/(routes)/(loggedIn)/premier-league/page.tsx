@@ -121,6 +121,36 @@ const page = () => {
     }
   };
 
+  const updateRemoveStreak = async (player: Player) => {
+    const q = query(
+      collection(db, "streakHistory2024"),
+      where("playerId", "==", player.id.toString()),
+      limit(1)
+    );
+
+    let olderStreak: number = 0;
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      //document doesn't exist. return
+      return;
+    } else {
+      //doc found
+      olderStreak = querySnapshot.docs[0].data().streakBefore;
+    }
+
+    const streakHistoryRef = doc(db, "streakHistory2024", player.id.toString());
+
+    setDoc(
+      streakHistoryRef,
+      {
+        streakBefore: olderStreak,
+        currStreak: olderStreak,
+        dateUpdated: new Date(),
+      },
+      { merge: true }
+    );
+  };
+
   const updateRank = async (cardToDel: any) => {
     if (cardToDel !== null) {
       let winner: Team = cardToDel.winnerTeam;
@@ -134,6 +164,8 @@ const page = () => {
 
       teamsList.forEach((team) => {
         team.teamPlayers.map((player: Player) => {
+          updateRemoveStreak(player); //retrieve older streak before this match from player streak collection
+
           const w = team.score;
           const legW = cardToDel.winnerTeam.teamPlayers.find(
             (p: Player) => p.id === player.id

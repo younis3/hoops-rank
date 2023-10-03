@@ -9,7 +9,14 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import styles from "./ScoreTable.module.scss";
 import { useEffect, useRef, useState } from "react";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { Player } from "../../models/Player";
 import { db } from "@/app/firebase";
 
@@ -70,6 +77,7 @@ const columns: readonly Column[] = [
 interface Data {
   rank: number;
   name: string;
+  id: string;
   points: number;
   wins: number;
   leagueWins: number;
@@ -113,42 +121,65 @@ export default function scoreTable() {
     }
   });
 
+  const getOnFire = async (playerId: string): Promise<boolean> => {
+    //🔥
+    let res: boolean;
+    const q = query(
+      collection(db, "streakHistory2024"),
+      where("playerId", "==", playerId),
+      limit(1)
+    );
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      if (querySnapshot.docs[0].data().currStreak >= 3) {
+        res = true;
+      } else {
+        res = false;
+      }
+    } else {
+      res = false;
+    }
+    return res;
+  };
+
   useEffect(() => {
     // when recent winners available (for the emojis) add and rank all the players
-
     if (recentLegW.length) {
       (async () => {
         const querySnapshot = await getDocs(players2024statsCollection);
         querySnapshot.docs
           .sort((a, b) => b.data().exp - a.data().exp)
           .forEach((playerDoc, index) => {
-            const isPlayerIdIncluded = recentLegW.some(
-              (player) => player.id === playerDoc.data().playerId
-            );
-            const legWinnerEmoji = isPlayerIdIncluded ? "🏆" : "";
-            const mvpEmoji =
-              playerDoc.data().playerId === recentMvpRef.current?.id
-                ? "🥇"
-                : "";
-            const onFireEmoji =
-              playerDoc.data().playerName === "Aubida" ? "🔥" : "";
-            const playerStat: Data = {
-              rank: index + 1,
-              name:
-                playerDoc.data().playerName +
-                legWinnerEmoji +
-                mvpEmoji +
-                onFireEmoji,
-              points: playerDoc.data().exp,
-              wins: playerDoc.data().totalWins,
-              leagueWins: playerDoc.data().leagueWins,
-              cupWins: playerDoc.data().cupWins,
-              mvp: playerDoc.data().mvpCount,
-              attends: playerDoc.data().attCount,
-            };
-            data.push(playerStat);
-            loadingRef.current = false;
-            setRefresh(!refresh);
+            getOnFire(playerDoc.data().playerId).then((res) => {
+              const onFire = res === true ? "🔥" : "";
+              const isPlayerIdIncluded = recentLegW.some(
+                (player) => player.id === playerDoc.data().playerId
+              );
+              const legWinnerEmoji = isPlayerIdIncluded ? "🏆" : "";
+              const mvpEmoji =
+                playerDoc.data().playerId === recentMvpRef.current?.id
+                  ? "🥇"
+                  : "";
+
+              const playerStat: Data = {
+                rank: index + 1,
+                name:
+                  playerDoc.data().playerName +
+                  legWinnerEmoji +
+                  mvpEmoji +
+                  onFire,
+                id: playerDoc.data().playerId,
+                points: playerDoc.data().exp,
+                wins: playerDoc.data().totalWins,
+                leagueWins: playerDoc.data().leagueWins,
+                cupWins: playerDoc.data().cupWins,
+                mvp: playerDoc.data().mvpCount,
+                attends: playerDoc.data().attCount,
+              };
+              data.push(playerStat);
+              loadingRef.current = false;
+              setRefresh(!refresh);
+            });
           });
       })();
     }
