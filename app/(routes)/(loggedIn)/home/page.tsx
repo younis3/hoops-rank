@@ -1,6 +1,6 @@
 "use client";
 
-import ScoreTable from "../../../_components/score-table/ScoreTable";
+import ScoreTable from "@/app/_components/score-table/ScoreTable";
 import styles from "./home.module.scss";
 import Image from "next/image";
 
