@@ -1,4 +1,6 @@
 import * as React from "react";
+import Image from "next/image";
+import loading from "../../_assets/images/loading2.gif";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -94,9 +96,11 @@ interface Data {
 export default function scoreTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
-  const [data, setData] = useState<Data[]>([]);
+  const [updatedData, setUpdatedData] = useState<Data[]>([]);
+
   const [finalData, setFinalData] = useState<Data[]>([]);
   const [gotFinalData, setGotFinalData] = useState<boolean>(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   const recentMvpRef = useRef<Player | null>(null);
   const [recentLegW, setRecentLegW] = useState<Player[]>([]);
@@ -151,7 +155,7 @@ export default function scoreTable() {
     if (recentLegW.length) {
       (async () => {
         const querySnapshot = await getDocs(players2024statsCollection);
-        let updatedData: Data[] = [...data];
+        let updatedData: Data[] = [];
         querySnapshot.docs.forEach((playerDoc, index) => {
           getOnFire(playerDoc.data().playerId).then((res) => {
             const onFire = res === true ? "🔥" : "";
@@ -182,55 +186,67 @@ export default function scoreTable() {
                 MVP_VALUE * playerDoc.data().mvpCount +
                 ATT_VALUE * playerDoc.data().attCount,
             };
-            updatedData = [...updatedData, playerStat];
-            setData(updatedData);
-            setGotFinalData(true);
+            updatedData.push(playerStat);
           });
         });
+        setTimeout(() => {
+          setUpdatedData(updatedData);
+          setGotFinalData(true);
+        }, 2000);
       })();
     }
   }, [recentLegW]);
 
   useEffect(() => {
-    // after getting data from db. sort and rank players based on points. then save to new array
     if (gotFinalData) {
-      let updatedFinalData: Data[] = [...finalData];
-      data
-        .sort((a, b) => b.points - a.points)
-        .forEach((playerStat, index) => {
-          const playerScores: Data = {
-            rank: index + 1,
-            name: playerStat.name,
-            id: playerStat.id,
-            wins: playerStat.wins,
-            leagueWins: playerStat.leagueWins,
-            cupWins: playerStat.cupWins,
-            mvp: playerStat.mvp,
-            attends: playerStat.attends,
-            points: playerStat.points,
-          };
-          updatedFinalData = [...updatedFinalData, playerScores];
-        });
+      // after getting data from db. sort and rank players based on points. then save to new array
+      let updatedFinalData: Data[] = [];
+      if (updatedData.length) {
+        updatedData
+          .sort((a, b) => b.points - a.points)
+          .forEach((playerStat, index) => {
+            const playerScores: Data = {
+              rank: index + 1,
+              name: playerStat.name,
+              id: playerStat.id,
+              wins: playerStat.wins,
+              leagueWins: playerStat.leagueWins,
+              cupWins: playerStat.cupWins,
+              mvp: playerStat.mvp,
+              attends: playerStat.attends,
+              points: playerStat.points,
+            };
+            updatedFinalData.push(playerScores);
+          });
+      }
       setFinalData(updatedFinalData);
       loadingRef.current = false;
+      setRefresh(!refresh);
     }
   }, [gotFinalData]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setPage(newPage);
+  // };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(+event.target.value);
+  //   setPage(0);
+  // };
 
   if (loadingRef.current) {
     return (
       <div className={styles.loading}>
-        <p className="text-black text-center mt-16">LOADING...</p>
+        <Image
+          src={loading}
+          width={260}
+          height={200}
+          alt="loading"
+          className="mt-10"
+        />
+        <p className="text-black text-center mt-6">LOADING...</p>
       </div>
     );
   } else {
@@ -308,14 +324,14 @@ export default function scoreTable() {
           </Table>
         </TableContainer>
         {/* <TablePagination
-        rowsPerPageOptions={[15, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
+          rowsPerPageOptions={[10, 20, 30]}
+          component="div"
+          count={finalData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        /> */}
         <h2 className="mt-3 mb-2 text-center text-sm">2023-2024 Season</h2>
       </Paper>
     );
