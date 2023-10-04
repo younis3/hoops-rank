@@ -19,8 +19,13 @@ import {
 } from "firebase/firestore";
 import { Player } from "../../models/Player";
 import { db } from "@/app/firebase";
-
-//🔥🏆🥇
+import {
+  W_VALUE,
+  LEG_W_VALUE,
+  CUP_W_VALUE,
+  MVP_VALUE,
+  ATT_VALUE,
+} from "../../values";
 
 interface Column {
   id:
@@ -75,7 +80,7 @@ const columns: readonly Column[] = [
 ];
 
 interface Data {
-  rank: number;
+  rank?: number;
   name: string;
   id: string;
   points: number;
@@ -90,11 +95,11 @@ export default function scoreTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [data, setData] = useState<Data[]>([]);
-  const [refresh, setRefresh] = useState<boolean>(false);
+  const [finalData, setFinalData] = useState<Data[]>([]);
+  const [gotFinalData, setGotFinalData] = useState<boolean>(false);
 
   const recentMvpRef = useRef<Player | null>(null);
   const [recentLegW, setRecentLegW] = useState<Player[]>([]);
-  const [playersOnFire, setPlayersOnFire] = useState<Player[]>([]);
   const loadingRef = useRef<boolean>(true);
 
   const players2024statsCollection = collection(db, "players2024stats");
@@ -102,7 +107,6 @@ export default function scoreTable() {
 
   useEffect(() => {
     // update recent winners and recent mvp player
-
     if (!recentLegW.length) {
       (async () => {
         const q = query(
@@ -147,43 +151,70 @@ export default function scoreTable() {
     if (recentLegW.length) {
       (async () => {
         const querySnapshot = await getDocs(players2024statsCollection);
-        querySnapshot.docs
-          .sort((a, b) => b.data().exp - a.data().exp)
-          .forEach((playerDoc, index) => {
-            getOnFire(playerDoc.data().playerId).then((res) => {
-              const onFire = res === true ? "🔥" : "";
-              const isPlayerIdIncluded = recentLegW.some(
-                (player) => player.id === playerDoc.data().playerId
-              );
-              const legWinnerEmoji = isPlayerIdIncluded ? "🏆" : "";
-              const mvpEmoji =
-                playerDoc.data().playerId === recentMvpRef.current?.id
-                  ? "🥇"
-                  : "";
-
-              const playerStat: Data = {
-                rank: index + 1,
-                name:
-                  playerDoc.data().playerName +
-                  legWinnerEmoji +
-                  mvpEmoji +
-                  onFire,
-                id: playerDoc.data().playerId,
-                points: playerDoc.data().exp,
-                wins: playerDoc.data().totalWins,
-                leagueWins: playerDoc.data().leagueWins,
-                cupWins: playerDoc.data().cupWins,
-                mvp: playerDoc.data().mvpCount,
-                attends: playerDoc.data().attCount,
-              };
-              data.push(playerStat);
-              loadingRef.current = false;
-              setRefresh(!refresh);
-            });
+        let updatedData: Data[] = [...data];
+        querySnapshot.docs.forEach((playerDoc, index) => {
+          getOnFire(playerDoc.data().playerId).then((res) => {
+            const onFire = res === true ? "🔥" : "";
+            const isPlayerIdIncluded = recentLegW.some(
+              (player) => player.id === playerDoc.data().playerId
+            );
+            const legWinnerEmoji = isPlayerIdIncluded ? "🏆" : "";
+            const mvpEmoji =
+              playerDoc.data().playerId === recentMvpRef.current?.id
+                ? "🥇"
+                : "";
+            const playerStat: Data = {
+              name:
+                playerDoc.data().playerName +
+                legWinnerEmoji +
+                mvpEmoji +
+                onFire,
+              id: playerDoc.data().playerId,
+              wins: playerDoc.data().totalWins,
+              leagueWins: playerDoc.data().leagueWins,
+              cupWins: playerDoc.data().cupWins,
+              mvp: playerDoc.data().mvpCount,
+              attends: playerDoc.data().attCount,
+              points:
+                W_VALUE * playerDoc.data().totalWins +
+                LEG_W_VALUE * playerDoc.data().leagueWins +
+                CUP_W_VALUE * playerDoc.data().cupWins +
+                MVP_VALUE * playerDoc.data().mvpCount +
+                ATT_VALUE * playerDoc.data().attCount,
+            };
+            updatedData = [...updatedData, playerStat];
+            setData(updatedData);
+            setGotFinalData(true);
           });
+        });
       })();
     }
   }, [recentLegW]);
+
+  useEffect(() => {
+    // after getting data from db. sort and rank players based on points. then save to new array
+    if (gotFinalData) {
+      let updatedFinalData: Data[] = [...finalData];
+      data
+        .sort((a, b) => b.points - a.points)
+        .forEach((playerStat, index) => {
+          const playerScores: Data = {
+            rank: index + 1,
+            name: playerStat.name,
+            id: playerStat.id,
+            wins: playerStat.wins,
+            leagueWins: playerStat.leagueWins,
+            cupWins: playerStat.cupWins,
+            mvp: playerStat.mvp,
+            attends: playerStat.attends,
+            points: playerStat.points,
+          };
+          updatedFinalData = [...updatedFinalData, playerScores];
+        });
+      setFinalData(updatedFinalData);
+      loadingRef.current = false;
+    }
+  }, [gotFinalData]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -235,7 +266,7 @@ export default function scoreTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data
+              {finalData
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (

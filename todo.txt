@@ -12,5 +12,5 @@ TODO
 // # add logout button
 // # premier league page (show match history cards)
 // # delete games and decrease score
-# add conscutive wins property to player stats collection
-# handle exp points directly from scoreboard wins
+// # add conscutive wins property to player stats collection
+// # handle exp points directly from scoreboard wins
