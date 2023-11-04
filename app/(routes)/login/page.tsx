@@ -30,7 +30,7 @@ export default function Login() {
       if (pass === process.env.NEXT_PUBLIC_PASSWORD_ADMIN) {
         setErr("");
         setUserRole("admin");
-        router.push("/troll");
+        router.push("/home");
       } else {
         setErr("Wrong Admin Password!");
       }
@@ -38,7 +38,7 @@ export default function Login() {
       if (pass === process.env.NEXT_PUBLIC_PASSWORD) {
         setErr("");
         setUserRole("user");
-        router.push("/hacked");
+        router.push("/home");
       } else {
         setErr("Wrong Password!");
       }
