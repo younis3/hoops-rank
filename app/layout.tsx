@@ -2,6 +2,7 @@ import Nav from "./_components/nav/horizontal/Nav";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { UserContextProvider } from "./context/user";
+import { SeasonSelectionContextProvider } from "./context/season";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <UserContextProvider>{children}</UserContextProvider>
+        <UserContextProvider>
+          <SeasonSelectionContextProvider>
+            {children}
+          </SeasonSelectionContextProvider>
+        </UserContextProvider>
       </body>
     </html>
   );

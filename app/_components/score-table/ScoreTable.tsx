@@ -256,7 +256,7 @@ export default function scoreTable() {
           sx={{
             paddingLeft: "4px",
             paddingRight: "4px",
-            mt: 4,
+            mt: 2,
             maxHeight: 505,
           }}
         >

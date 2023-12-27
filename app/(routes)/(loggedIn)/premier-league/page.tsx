@@ -29,6 +29,7 @@ import {
 } from "../../../values";
 import { Player } from "@/app/models/Player";
 import { Team } from "@/app/models/Team";
+import { useSeasonSelectionContext } from "@/app/context/season";
 
 const page = () => {
   const [data, setData] = useState<any[]>([]);
@@ -37,6 +38,7 @@ const page = () => {
   const { userRole } = useUserContext();
   const router = useRouter();
   const gamesResultsCollection = collection(db, "leagueScores");
+  const { CURRENT_SEASON, season } = useSeasonSelectionContext();
 
   useEffect(() => {
     getData().then((res) => {
@@ -70,8 +72,6 @@ const page = () => {
   };
 
   const removeResCard = async (i: number) => {
-    console.log("XXXX", i);
-
     if (userRole !== "admin") {
       setErr("Error: Only admins can edit or delete scores!");
       return;
@@ -204,17 +204,21 @@ const page = () => {
   return (
     <div className={styles.page}>
       <div className={styles.totalAndBtnWrapper}>
+        <p className={styles.season}>
+          Season <span>{season}</span>
+        </p>
         <div className={styles.total}>
           <p>
-            Total <span>{total}</span>
+            Total Played <span>{total}</span>
           </p>
         </div>
-        <div
+        <button
           className={styles.addBtn}
           onClick={() => router.push("/add-pl-score")}
+          disabled={CURRENT_SEASON.toString() !== season}
         >
           <PostAddIcon color="action" className={styles.addIcon} />
-        </div>
+        </button>
       </div>
       {err && (
         <Alert className="mt-4" severity="error">

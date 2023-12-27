@@ -34,6 +34,7 @@ import {
   MVP_VALUE,
   ATT_VALUE,
 } from "../../../values";
+import { useSeasonSelectionContext } from "@/app/context/season";
 
 const page = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -56,6 +57,7 @@ const page = () => {
 
   const leagueScoresCollection = collection(db, "leagueScores");
   const playersCollection = collection(db, "players");
+  const { CURRENT_SEASON, season } = useSeasonSelectionContext();
 
   useEffect(() => {
     (async () => {
@@ -178,6 +180,12 @@ const page = () => {
       return;
     }
 
+    if (CURRENT_SEASON.toString() !== season) {
+      setErr("Selected season has already ended!");
+      openModal(5);
+      return;
+    }
+
     if (scoreTeam1 < 0 || scoreTeam2 < 0 || scoreTeam3 < 0) {
       setErr("Invalid Score!");
       return;
@@ -278,6 +286,7 @@ const page = () => {
 
   return (
     <div className={styles.pageContainer}>
+      <h1 className="text-center text-black mt-4"> - Season {season} - </h1>
       <form onSubmit={handleSubmit} className={styles.formContainer}>
         <div className={styles.inputWrapper}>
           <label htmlFor="team1">Team 1</label>
