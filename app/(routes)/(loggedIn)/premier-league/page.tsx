@@ -37,8 +37,16 @@ const page = () => {
   const [err, setErr] = useState<string | null>(null);
   const { userRole } = useUserContext();
   const router = useRouter();
-  const gamesResultsCollection = collection(db, "leagueScores");
-  const { CURRENT_SEASON, season } = useSeasonSelectionContext();
+
+  const {
+    CURRENT_SEASON,
+    season,
+    leagueScoresCollection,
+    streakHistoryCollection,
+    playerStatsCollection,
+  } = useSeasonSelectionContext();
+  const leagueScoresCol = collection(db, leagueScoresCollection);
+  const streakHistoryCol = collection(db, streakHistoryCollection);
 
   useEffect(() => {
     getData().then((res) => {
@@ -48,7 +56,7 @@ const page = () => {
 
   const getData = (): Promise<any[]> => {
     const res = (async () => {
-      const querySnapshot = await getDocs(gamesResultsCollection);
+      const querySnapshot = await getDocs(leagueScoresCol);
       let counter: number = 0;
       let resultsArr: any[] = [];
       querySnapshot.docs
@@ -83,7 +91,7 @@ const page = () => {
       const cardToDel = data[i];
 
       const q = query(
-        gamesResultsCollection,
+        leagueScoresCol,
         where("date", "==", cardToDel.date),
         limit(1)
       );
@@ -97,7 +105,7 @@ const page = () => {
             console.log("Found document with ID:", doc.id);
             const data = doc.data();
             console.log("Document data:", data);
-            deleteDocument("leagueScores", doc.id);
+            deleteDocument(leagueScoresCollection, doc.id);
             updateRank(cardToDel);
           }
         })
@@ -108,7 +116,7 @@ const page = () => {
   };
 
   const deleteDocument = async (collectionName: string, documentId: string) => {
-    const docRef = doc(db, "leagueScores", documentId);
+    const docRef = doc(db, leagueScoresCollection, documentId);
     try {
       await deleteDoc(docRef).then(() => {
         console.log(`Document with ID ${documentId} deleted successfully.`);
@@ -123,7 +131,7 @@ const page = () => {
 
   const updateRemoveStreak = async (player: Player) => {
     const q = query(
-      collection(db, "streakHistory2024"),
+      streakHistoryCol,
       where("playerId", "==", player.id.toString()),
       limit(1)
     );
@@ -138,7 +146,11 @@ const page = () => {
       olderStreak = querySnapshot.docs[0].data().streakBefore;
     }
 
-    const streakHistoryRef = doc(db, "streakHistory2024", player.id.toString());
+    const streakHistoryRef = doc(
+      db,
+      streakHistoryCollection,
+      player.id.toString()
+    );
 
     setDoc(
       streakHistoryRef,
@@ -182,7 +194,11 @@ const page = () => {
             MVP_VALUE * mvpCount +
             ATT_VALUE * att;
 
-          const playerRef = doc(db, "players2024stats", player.id.toString());
+          const playerRef = doc(
+            db,
+            playerStatsCollection,
+            player.id.toString()
+          );
           setDoc(
             playerRef,
             {
