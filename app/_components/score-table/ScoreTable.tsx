@@ -28,6 +28,7 @@ import {
   MVP_VALUE,
   ATT_VALUE,
 } from "../../values";
+import { useSeasonSelectionContext } from "@/app/context/season";
 
 interface Column {
   id:
@@ -100,24 +101,23 @@ export default function scoreTable() {
 
   const [finalData, setFinalData] = useState<Data[]>([]);
   const [gotFinalData, setGotFinalData] = useState<boolean>(false);
-  const [refresh, setRefresh] = useState<boolean>(false);
 
   const recentMvpRef = useRef<Player | null>(null);
   const [recentLegW, setRecentLegW] = useState<Player[]>([]);
   const loadingRef = useRef<boolean>(true);
 
-  const players2024statsCollection = collection(db, "players2024stats");
-  const leagueScoresCollection = collection(db, "leagueScores");
+  const { leagueScoresCollection, playerStatsCollection } =
+    useSeasonSelectionContext();
+  const leagueScoresCol = collection(db, leagueScoresCollection);
+  const playerStatsCol = collection(db, playerStatsCollection);
+
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   useEffect(() => {
     // update recent winners and recent mvp player
     if (!recentLegW.length) {
       (async () => {
-        const q = query(
-          leagueScoresCollection,
-          orderBy("date", "desc"),
-          limit(1)
-        );
+        const q = query(leagueScoresCol, orderBy("date", "desc"), limit(1));
         const querySnapshot = await getDocs(q);
         querySnapshot.docs.forEach((res, index) => {
           if (index === 0) {
@@ -133,7 +133,7 @@ export default function scoreTable() {
     //🔥
     let res: boolean;
     const q = query(
-      collection(db, "streakHistory2024"),
+      playerStatsCol,
       where("playerId", "==", playerId),
       limit(1)
     );
@@ -154,7 +154,7 @@ export default function scoreTable() {
     // when recent winners available (for the emojis) add and rank all the players
     if (recentLegW.length) {
       (async () => {
-        const querySnapshot = await getDocs(players2024statsCollection);
+        const querySnapshot = await getDocs(playerStatsCol);
         let updatedData: Data[] = [];
         querySnapshot.docs.forEach((playerDoc, index) => {
           getOnFire(playerDoc.data().playerId).then((res) => {
@@ -251,79 +251,80 @@ export default function scoreTable() {
     );
   } else {
     return (
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer
-          sx={{
-            paddingLeft: "4px",
-            paddingRight: "4px",
-            mt: 2,
-            maxHeight: 505,
-          }}
-        >
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    sx={{ fontSize: 11 }}
-                    key={column.id}
-                    align={column.align}
-                    style={{
-                      minWidth: column.minWidth,
-                      padding: "1px",
-                    }}
-                    className={
-                      column.label == "EXP" ? styles.MuiTableCellPts : ""
-                    }
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {finalData
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      // role="checkbox"
-                      role="cell"
-                      tabIndex={-1}
-                      key={row.name + Math.random()}
+      <div>
+        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          <TableContainer
+            sx={{
+              paddingLeft: "4px",
+              paddingRight: "4px",
+              mt: 2,
+              maxHeight: 505,
+            }}
+          >
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      sx={{ fontSize: 11 }}
+                      key={column.id}
+                      align={column.align}
+                      style={{
+                        minWidth: column.minWidth,
+                        padding: "1px",
+                      }}
+                      className={
+                        column.label == "EXP" ? styles.MuiTableCellPts : ""
+                      }
                     >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell
-                            sx={{ fontSize: 14 }}
-                            style={{
-                              padding: "14px",
-                            }}
-                            className={
-                              column.label == "EXP"
-                                ? styles.MuiTableCellPts
-                                : column.label == "Rank"
-                                ? styles.MuiTableCellRank
-                                : ""
-                            }
-                            key={column.id}
-                            align={column.align}
-                          >
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {/* <TablePagination
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {finalData
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        // role="checkbox"
+                        role="cell"
+                        tabIndex={-1}
+                        key={row.name + Math.random()}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell
+                              sx={{ fontSize: 14 }}
+                              style={{
+                                padding: "14px",
+                              }}
+                              className={
+                                column.label == "EXP"
+                                  ? styles.MuiTableCellPts
+                                  : column.label == "Rank"
+                                  ? styles.MuiTableCellRank
+                                  : ""
+                              }
+                              key={column.id}
+                              align={column.align}
+                            >
+                              {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {/* <TablePagination
           rowsPerPageOptions={[10, 20, 30]}
           component="div"
           count={finalData.length}
@@ -332,8 +333,9 @@ export default function scoreTable() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         /> */}
-        <h2 className="mt-3 mb-2 text-center text-sm">2023-2024 Season</h2>
-      </Paper>
+          <h2 className="mt-3 mb-2 text-center text-sm">2023-2024 Season</h2>
+        </Paper>
+      </div>
     );
   }
 }

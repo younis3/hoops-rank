@@ -55,9 +55,17 @@ const page = () => {
 
   const { userRole } = useUserContext();
 
-  const leagueScoresCollection = collection(db, "leagueScores");
   const playersCollection = collection(db, "players");
-  const { CURRENT_SEASON, season } = useSeasonSelectionContext();
+
+  const {
+    CURRENT_SEASON,
+    season,
+    leagueScoresCollection,
+    playerStatsCollection,
+    streakHistoryCollection,
+  } = useSeasonSelectionContext();
+  const leagueScoresCol = collection(db, leagueScoresCollection);
+  const streakHistoryCol = collection(db, streakHistoryCollection);
 
   useEffect(() => {
     (async () => {
@@ -128,7 +136,7 @@ const page = () => {
 
   const updateStreak = async (player: Player, legW: number) => {
     const q = query(
-      collection(db, "streakHistory2024"),
+      streakHistoryCol,
       where("playerId", "==", player.id.toString()),
       limit(1)
     );
@@ -144,7 +152,11 @@ const page = () => {
       currStreakOld = querySnapshot.docs[0].data().currStreak;
     }
 
-    const streakHistoryRef = doc(db, "streakHistory2024", player.id.toString());
+    const streakHistoryRef = doc(
+      db,
+      streakHistoryCollection,
+      player.id.toString()
+    );
 
     if (isNew) {
       setDoc(
@@ -252,7 +264,7 @@ const page = () => {
 
         updateStreak(player, legW); //update player wins streak in streak history collection
 
-        const playerRef = doc(db, "players2024stats", player.id.toString());
+        const playerRef = doc(db, playerStatsCollection, player.id.toString());
         setDoc(
           playerRef,
           {
@@ -272,7 +284,7 @@ const page = () => {
     });
 
     //add team scores result to db
-    await addDoc(leagueScoresCollection, {
+    await addDoc(leagueScoresCol, {
       team1: teamOne,
       team2: teamTwo,
       team3: teamThree,
