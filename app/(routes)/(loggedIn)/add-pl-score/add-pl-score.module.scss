@@ -1,11 +1,5 @@
 .pageContainer {
-    // max-width: 200px;
-    // margin-left: auto;
-    // margin-right: auto;
-    // background-color: red;
-    // overflow: hidden;
     width: 100%;
-    // max-width: 50vw;
 }
 
 .formContainer {
@@ -15,9 +9,6 @@
     flex-direction: column;
     margin-top: 1vh;
     .inputWrapper {
-        // margin-top: 2vh;
-        // display: flex;
-        // flex-direction: row;
         padding: 4px;
         display: inline;
         margin-left: 1.5%;
@@ -47,7 +38,6 @@
         margin: 1px;
         margin-top: 0.3vh;
         margin-bottom: 2vh;
-        // background-color: rgba(128, 128, 128, 0.146);
         background-color: rgba(0, 0, 0, 0.509);
         height: 66px;
         width: 96%;
@@ -83,10 +73,8 @@
         width: 15%;
         border: 1px solid rgba(0, 0, 0, 0.372);
         padding: 1px 6px;
-        // margin-left: 12vw;
         margin-bottom: 0.6vh;
         border-radius: 8px;
-        // box-shadow: 6px 4px 1px 0.3px rgba(0, 0, 0, 0.213);
     }
 
     .mvpInput {
