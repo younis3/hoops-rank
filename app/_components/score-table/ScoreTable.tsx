@@ -106,10 +106,14 @@ export default function scoreTable() {
   const [recentLegW, setRecentLegW] = useState<Player[]>([]);
   const loadingRef = useRef<boolean>(true);
 
-  const { leagueScoresCollection, playerStatsCollection } =
-    useSeasonSelectionContext();
+  const {
+    leagueScoresCollection,
+    playerStatsCollection,
+    streakHistoryCollection,
+  } = useSeasonSelectionContext();
   const leagueScoresCol = collection(db, leagueScoresCollection);
   const playerStatsCol = collection(db, playerStatsCollection);
+  const streakHistoryCol = collection(db, streakHistoryCollection);
 
   const [refresh, setRefresh] = useState<boolean>(false);
 
@@ -133,7 +137,7 @@ export default function scoreTable() {
     //🔥
     let res: boolean;
     const q = query(
-      playerStatsCol,
+      streakHistoryCol,
       where("playerId", "==", playerId),
       limit(1)
     );
