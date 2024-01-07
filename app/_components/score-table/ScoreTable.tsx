@@ -276,6 +276,8 @@ export default function scoreTable() {
                       style={{
                         minWidth: column.minWidth,
                         padding: "1px",
+                        // backgroundColor: "rgba(59, 28, 28, 0.272)",
+                        borderBottom: "1px solid #1c121252",
                       }}
                       className={
                         column.label == "EXP" ? styles.MuiTableCellPts : ""
@@ -289,7 +291,7 @@ export default function scoreTable() {
               <TableBody>
                 {finalData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
+                  .map((row, index) => {
                     return (
                       <TableRow
                         hover
@@ -297,15 +299,23 @@ export default function scoreTable() {
                         role="cell"
                         tabIndex={-1}
                         key={row.name + Math.random()}
+                        style={{ borderBottom: "2px solid black" }}
+                        className={index < 4 ? styles.MuiTableTopFour : ""}
                       >
                         {columns.map((column) => {
                           const value = row[column.id];
                           return (
                             <TableCell
-                              sx={{ fontSize: 14 }}
-                              style={{
-                                padding: "14px",
+                              sx={{
+                                fontSize: 14,
                               }}
+                              style={{
+                                padding: "10px",
+                                borderBottom: `${
+                                  index == 3 ? "2px dashed grey" : ""
+                                } `,
+                              }}
+                              // className={"bg-red-200"}
                               className={
                                 column.label == "EXP"
                                   ? styles.MuiTableCellPts
