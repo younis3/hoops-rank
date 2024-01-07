@@ -310,7 +310,7 @@ export default function scoreTable() {
                                 fontSize: 14,
                               }}
                               style={{
-                                padding: "10px",
+                                padding: "11px",
                                 borderBottom: `${
                                   index == 3 ? "2px dashed grey" : ""
                                 } `,
