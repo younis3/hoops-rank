@@ -27,7 +27,8 @@ export default function Home() {
             value={season}
             onChange={handleSelectChange}
           >
-            <option value="2">[Season 2] - [ 11/11/2023 - Present ]</option>
+            <option value="3">[Season 3] - [ 8/6/2024 - Present ]</option>
+            <option value="2">[Season 2] - [ 11/11/2023 - 18/5/2024 ]</option>
             <option value="1">[Season 1] - [ 29/7/2023 - 4/11/2023 ]</option>
           </select>
         </div>
