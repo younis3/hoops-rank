@@ -1,6 +1,6 @@
 "use client";
 
-const CURRENT_SEASON = 2;
+const CURRENT_SEASON = 3;
 
 import {
   Dispatch,
